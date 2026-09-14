@@ -1,0 +1,42 @@
+---
+// Skills — real skills grouped logically, no invented proficiency bars.
+// Adding a skill later = one string in src/data/site.ts.
+import Container from "../Container.astro";
+import Section from "../Section.astro";
+import Card from "../Card.astro";
+import Badge from "../Badge.astro";
+import { skills } from "../../data/site";
+---
+
+<Section id="skills">
+  <Container>
+    <p class="font-mono text-xs uppercase tracking-widest text-accent">
+      Skills
+    </p>
+    <h2 class="mt-2">What I work with.</h2>
+    <p class="mt-3 max-w-prose text-muted">
+      An honest snapshot: what I can use today, and what I'm actively
+      learning. No percentages — proficiency is shown by the projects, not
+      by a progress bar.
+    </p>
+
+    <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+      {
+        skills.groups.map((group) => (
+          <li>
+            <Card class="h-full">
+              <h3 class="font-display text-base">{group.label}</h3>
+              <ul class="mt-4 flex flex-wrap gap-2" role="list">
+                {group.items.map((item) => (
+                  <li>
+                    <Badge>{item}</Badge>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </li>
+        ))
+      }
+    </ul>
+  </Container>
+</Section>
