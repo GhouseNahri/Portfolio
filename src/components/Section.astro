@@ -2,6 +2,9 @@
 // Section — a vertical chunk of the page with consistent rhythm.
 // Props: id (for nav anchors) and spacing size. Rendered as a real
 // <section> landmark so assistive tech can navigate the page.
+//
+// `scroll-mt-24`: when a nav link jumps to #id, this keeps the section
+// heading 6rem below the top — clear of the 64px (4rem) sticky header.
 interface Props {
   id?: string;
   space?: "md" | "lg";
@@ -12,7 +15,11 @@ const { id, space = "lg", class: className } = Astro.props;
 
 <section
   id={id}
-  class:list={[space === "lg" ? "py-20 sm:py-28" : "py-12 sm:py-16", className]}
+  class:list={[
+    space === "lg" ? "py-20 sm:py-28" : "py-12 sm:py-16",
+    id && "scroll-mt-24",
+    className,
+  ]}
 >
   <slot />
 </section>

@@ -63,10 +63,15 @@ const {
 </html>
 
 <style>
-  /* Sticky footer: short pages still push the footer to the bottom. */
+  /* Sticky footer: short pages still push the footer to the bottom.
+     `100svh` is the small-viewport height unit — on phones, plain `100vh`
+     is taller than the visible screen (address bar), which made the footer
+     jump when the bar collapsed. svh fixes that; vh stays as fallback
+     for older browsers. */
   body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    min-height: 100svh;
   }
 </style>

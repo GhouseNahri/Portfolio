@@ -40,6 +40,8 @@ import { site } from "../../data/site";
             <label for="contact-name" class="mb-1.5 block text-sm font-medium">
               Name
             </label>
+            <!-- text-base (16px): iOS Safari force-zooms the page on
+                 focus for any input below 16px — a classic mobile bug. -->
             <input
               id="contact-name"
               name="name"
@@ -47,7 +49,7 @@ import { site } from "../../data/site";
               required
               autocomplete="name"
               aria-describedby="contact-name-hint"
-              class="w-full rounded-md border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-faint focus:border-accent focus:outline-none"
+              class="w-full rounded-md border border-line bg-surface px-3.5 py-2.5 text-base text-ink placeholder:text-faint focus:border-accent focus:outline-none"
               placeholder="Your name"
             />
             <p id="contact-name-hint" class="mt-1 text-xs text-faint">
@@ -66,7 +68,7 @@ import { site } from "../../data/site";
               required
               autocomplete="email"
               aria-describedby="contact-email-hint"
-              class="w-full rounded-md border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-faint focus:border-accent focus:outline-none"
+              class="w-full rounded-md border border-line bg-surface px-3.5 py-2.5 text-base text-ink placeholder:text-faint focus:border-accent focus:outline-none"
               placeholder="you@example.com"
             />
             <p id="contact-email-hint" class="mt-1 text-xs text-faint">
@@ -83,7 +85,7 @@ import { site } from "../../data/site";
               name="message"
               rows="4"
               required
-              class="w-full resize-y rounded-md border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-faint focus:border-accent focus:outline-none"
+              class="w-full resize-y rounded-md border border-line bg-surface px-3.5 py-2.5 text-base text-ink placeholder:text-faint focus:border-accent focus:outline-none"
               placeholder="What would you like to talk about?"
             ></textarea>
           </div>

@@ -20,7 +20,9 @@ import { site } from "../../data/site";
       <!-- The page's single h1 -->
       <h1>
         {site.name}
-        <span class="mt-2 block text-muted">{site.role}</span>
+        <!-- Role gets its own smaller scale: display size makes this
+             line wrap into a huge 2-line block on phones. -->
+        <span class="mt-2 block text-xl text-muted sm:text-2xl">{site.role}</span>
       </h1>
 
       <p class="mt-5 max-w-prose text-lg text-muted">{site.tagline}</p>

@@ -94,6 +94,12 @@ html.light {
     color-scheme: light;
   }
 
+  /* Smooth in-page anchor scrolling. The prefers-reduced-motion block
+     below forces this back to `auto` for users who opt out. */
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-ink);
