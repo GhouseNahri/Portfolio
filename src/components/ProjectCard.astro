@@ -1,0 +1,52 @@
+---
+// ProjectCard — one real project. Driven entirely by a data object
+// from src/data/site.ts, so adding a project never touches markup.
+// Text-first design: screenshots get added when real ones exist —
+// we never invent images.
+import Card from "./Card.astro";
+import Badge from "./Badge.astro";
+
+export interface Project {
+  title: string;
+  description: string;
+  tech: readonly string[];
+  status: "in-progress" | "live" | "archived";
+  github: string;
+  demo?: string;
+}
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+
+const statusLabels = {
+  "in-progress": "in progress",
+  live: "live",
+  archived: "archived",
+} as const;
+---
+
+<Card href={project.demo || project.github}>
+  <div class="flex items-center justify-between gap-3">
+    <h3 class="font-display text-lg">{project.title}</h3>
+    <Badge
+      class={project.status === "live" ? "border-success/40 text-success" : ""}
+    >
+      {statusLabels[project.status]}
+    </Badge>
+  </div>
+  <p class="mt-2 text-sm text-muted">{project.description}</p>
+  <ul class="mt-4 flex flex-wrap gap-2" role="list" aria-label="Technologies used">
+    {
+      project.tech.map((item) => (
+        <li>
+          <Badge>{item}</Badge>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="mt-4 text-sm font-medium text-accent">
+    {project.demo ? "Open project →" : "View on GitHub →"}
+  </p>
+</Card>

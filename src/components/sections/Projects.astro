@@ -1,0 +1,58 @@
+---
+// Projects — the heart of the portfolio. Renders one ProjectCard per
+// real project in src/data/site.ts. While the list is empty we show an
+// honest "in progress" note — never fake projects. Filters arrive with
+// the first project (they'd be noise with nothing to filter).
+import Container from "../Container.astro";
+import Section from "../Section.astro";
+import Card from "../Card.astro";
+import Button from "../Button.astro";
+import ProjectCard from "../ProjectCard.astro";
+import { projects, site } from "../../data/site";
+
+const items = [...projects.items];
+---
+
+<Section id="projects">
+  <Container>
+    <p class="font-mono text-xs uppercase tracking-widest text-accent">
+      Projects
+    </p>
+    <h2 class="mt-2">Things I've built.</h2>
+    <p class="mt-3 max-w-prose text-muted">
+      Every project here is real, built by me, and linked to its source —
+      including the ones that taught me the hard lessons.
+    </p>
+
+    {
+      items.length > 0 ? (
+        <ul class="mt-10 grid gap-4 sm:grid-cols-2" role="list">
+          {items.map((project) => (
+            <li>
+              <ProjectCard project={project} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <Card class="mt-10 border-dashed">
+          <h3 class="font-display text-lg">First project in progress</h3>
+          <p class="mt-2 max-w-prose text-sm text-muted">
+            I'm building my first real project right now — it lands here as
+            soon as it's real enough to show, with source code and an honest
+            write-up. Meanwhile, my GitHub already shows what I'm working on:
+          </p>
+          <div class="mt-5">
+            <Button
+              href={site.github}
+              variant="secondary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub&nbsp;↗
+            </Button>
+          </div>
+        </Card>
+      )
+    }
+  </Container>
+</Section>
