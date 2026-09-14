@@ -1,13 +1,14 @@
 ---
-// Footer — minimal for now; Phase 4+ fills in real profiles & links.
-// PLACEHOLDERS: the GitHub/LinkedIn hrefs are clearly marked and get
-// real URLs in Phase 7 (Content & Personalization).
+// Footer — driven by site data. Socials render only when they exist:
+// no fake links. LinkedIn appears automatically once its URL is added
+// to src/data/site.ts.
 import Container from "./Container.astro";
+import { site } from "../data/site";
 
 const year = new Date().getFullYear();
 const socials = [
-  { label: "GitHub", href: "https://github.com/GhouseNahri" },
-  { label: "LinkedIn", href: "#" }, // PLACEHOLDER — real URL in Phase 7
+  { label: "GitHub", href: site.github },
+  ...(site.linkedin ? [{ label: "LinkedIn", href: site.linkedin }] : []),
 ];
 ---
 

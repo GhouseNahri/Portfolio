@@ -1,0 +1,44 @@
+---
+// Hero — the first thing visitors see: who I am, in one glance.
+// All text comes from src/data/site.ts (real content only).
+import Container from "../Container.astro";
+import Section from "../Section.astro";
+import Button from "../Button.astro";
+import Badge from "../Badge.astro";
+import { site } from "../../data/site";
+---
+
+<Section space="md" class="pt-16 sm:pt-28">
+  <Container>
+    <div class="max-w-2xl">
+      <!-- Availability badge: recruiters learn the page's purpose immediately -->
+      <Badge class="mb-6 border-accent/40 text-accent">
+        <span class="mr-1.5 inline-block size-1.5 rounded-full bg-accent" aria-hidden="true"></span>
+        {site.availability}
+      </Badge>
+
+      <!-- The page's single h1 -->
+      <h1>
+        {site.name}
+        <span class="mt-2 block text-muted">{site.role}</span>
+      </h1>
+
+      <p class="mt-5 max-w-prose text-lg text-muted">{site.tagline}</p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <Button href="#projects" variant="primary" size="lg">
+          View projects
+        </Button>
+        <Button
+          href={site.github}
+          variant="secondary"
+          size="lg"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub&nbsp;↗
+        </Button>
+      </div>
+    </div>
+  </Container>
+</Section>

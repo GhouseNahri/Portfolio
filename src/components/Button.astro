@@ -12,6 +12,9 @@ interface Props {
   size?: "md" | "lg";
   type?: "button" | "submit";
   disabled?: boolean;
+  /** Pass-through for external links (target="_blank" etc.) */
+  target?: string;
+  rel?: string;
   class?: string;
 }
 const {
@@ -20,6 +23,8 @@ const {
   size = "md",
   type = "button",
   disabled = false,
+  target,
+  rel,
   class: className,
 } = Astro.props;
 
@@ -46,6 +51,8 @@ const variants = {
 
 <Tag
   href={href}
+  target={href ? target : undefined}
+  rel={href ? rel : undefined}
   type={href ? undefined : type}
   disabled={href ? undefined : disabled || undefined}
   aria-disabled={disabled || undefined}

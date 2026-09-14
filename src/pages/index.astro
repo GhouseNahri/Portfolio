@@ -1,36 +1,10 @@
 ---
-// Homepage stub — proves the foundation works end to end.
-// Real portfolio sections (hero, about, projects...) arrive in Phase 4.
+// Homepage — assembles the portfolio sections (one <main> landmark).
+// Sections are appended here one at a time as Phase 4 progresses.
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Container from "../components/Container.astro";
-import Section from "../components/Section.astro";
-import Button from "../components/Button.astro";
+import Hero from "../components/sections/Hero.astro";
 ---
 
 <BaseLayout title="Ghouse Nahri — IT Student & Aspiring Developer">
-  <Container>
-    <Section space="md" class="pt-16 sm:pt-24">
-      <p class="font-mono text-xs uppercase tracking-widest text-accent">
-        Foundation online
-      </p>
-      <h1 class="mt-3">
-        Ghouse Nahri
-        <span class="block text-muted">IT Student &amp; Aspiring Developer</span>
-      </h1>
-      <p class="mt-4 max-w-prose text-muted">
-        The design system is live: dark-first theme with a teal accent,
-        Space Grotesk / Inter / JetBrains Mono typography, and a fully
-        accessible navigation foundation. The real sections are built in
-        Phase 4.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <Button href="/showcase" variant="primary">
-          View design system showcase
-        </Button>
-        <Button href="#about" variant="secondary" disabled>
-          Sections arrive in Phase 4
-        </Button>
-      </div>
-    </Section>
-  </Container>
+  <Hero />
 </BaseLayout>
