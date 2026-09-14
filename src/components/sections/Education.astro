@@ -1,0 +1,43 @@
+---
+// Education — rendered from data; entries show a small "details to
+// come" marker while real values are pending (never presented as real).
+import Container from "../Container.astro";
+import Section from "../Section.astro";
+import Badge from "../Badge.astro";
+import { education } from "../../data/site";
+
+const isPlaceholder = (value: string) => /PLACEHOLDER|20XX|Institution name/.test(value);
+---
+
+<Section id="education">
+  <Container>
+    <p class="font-mono text-xs uppercase tracking-widest text-accent">
+      Education
+    </p>
+    <h2 class="mt-2">Where I'm studying.</h2>
+
+    <ol class="mt-10 space-y-4" role="list">
+      {
+        education.entries.map((entry) => (
+          <li>
+            <div class="rounded-lg border border-line bg-surface p-6 shadow-soft">
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h3 class="font-display text-lg">{entry.degree}</h3>
+                <Badge>{entry.period}</Badge>
+              </div>
+              <p class="mt-1 text-sm text-muted">{entry.institution}</p>
+              {(isPlaceholder(entry.degree) ||
+                isPlaceholder(entry.institution) ||
+                isPlaceholder(entry.period)) && (
+                <p class="mt-3 font-mono text-xs text-faint">
+                  // details coming soon — real information, no placeholders
+                  dressed as facts
+                </p>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </Container>
+</Section>
