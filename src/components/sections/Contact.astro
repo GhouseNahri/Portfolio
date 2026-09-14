@@ -1,0 +1,124 @@
+---
+// Contact — how to reach me. Form is real UI with real validation, but
+// delivery isn't wired yet: clicking send says so HONESTLY (no fake
+// "message sent!"). A free form service gets integrated in a later
+// phase. Email is intentionally not displayed (Phase 1 privacy choice).
+import Container from "../Container.astro";
+import Section from "../Section.astro";
+import Button from "../Button.astro";
+import { site } from "../../data/site";
+---
+
+<Section id="contact">
+  <Container>
+    <div class="grid gap-12 lg:grid-cols-[1fr_420px]">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-accent">
+          Contact
+        </p>
+        <h2 class="mt-2">Let's talk.</h2>
+        <p class="mt-4 max-w-prose text-muted">
+          Want to discuss an internship, collaborate on something, or just
+          say hi? The form is the fastest way to reach me — or find me on
+          GitHub.
+        </p>
+        <div class="mt-6">
+          <Button
+            href={site.github}
+            variant="secondary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub&nbsp;↗
+          </Button>
+        </div>
+      </div>
+
+      <form id="contact-form" novalidate>
+        <div class="space-y-5">
+          <div>
+            <label for="contact-name" class="mb-1.5 block text-sm font-medium">
+              Name
+            </label>
+            <input
+              id="contact-name"
+              name="name"
+              type="text"
+              required
+              autocomplete="name"
+              aria-describedby="contact-name-hint"
+              class="w-full rounded-md border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-faint focus:border-accent focus:outline-none"
+              placeholder="Your name"
+            />
+            <p id="contact-name-hint" class="mt-1 text-xs text-faint">
+              So I know who I'm talking to.
+            </p>
+          </div>
+
+          <div>
+            <label for="contact-email" class="mb-1.5 block text-sm font-medium">
+              Email
+            </label>
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              aria-describedby="contact-email-hint"
+              class="w-full rounded-md border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-faint focus:border-accent focus:outline-none"
+              placeholder="you@example.com"
+            />
+            <p id="contact-email-hint" class="mt-1 text-xs text-faint">
+              Only used to reply to you.
+            </p>
+          </div>
+
+          <div>
+            <label for="contact-message" class="mb-1.5 block text-sm font-medium">
+              Message
+            </label>
+            <textarea
+              id="contact-message"
+              name="message"
+              rows="4"
+              required
+              class="w-full resize-y rounded-md border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-faint focus:border-accent focus:outline-none"
+              placeholder="What would you like to talk about?"
+            ></textarea>
+          </div>
+
+          <Button type="submit" variant="primary" class="w-full sm:w-auto">
+            Send message
+          </Button>
+
+          <!-- Honest status: never claims a message was sent -->
+          <p
+            id="contact-status"
+            role="status"
+            class="hidden rounded-md border border-line bg-surface px-3.5 py-2.5 text-sm text-muted"
+          >
+          </p>
+        </div>
+      </form>
+    </div>
+  </Container>
+</Section>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const status = document.getElementById("contact-status");
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault(); // no backend yet — do NOT pretend anything was sent
+
+    if (!form.reportValidity()) return; // browser shows field errors
+
+    if (status) {
+      status.textContent =
+        "Thanks! Message delivery is being set up — meanwhile, reach me on GitHub and it reaches me fastest.";
+      status.classList.remove("hidden");
+    }
+    form.reset();
+  });
+</script>
