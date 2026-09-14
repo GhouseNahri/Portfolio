@@ -1,0 +1,45 @@
+---
+// About — context beyond the hero: stage, approach, and what I'm learning.
+// Text comes from src/data/site.ts; drafted from real Phase 1 answers
+// and meant to be personalized further in Phase 7.
+import Container from "../Container.astro";
+import Section from "../Section.astro";
+import Badge from "../Badge.astro";
+import { about } from "../../data/site";
+---
+
+<Section id="about">
+  <Container>
+    <p class="font-mono text-xs uppercase tracking-widest text-accent">About</p>
+    <h2 class="mt-2">Learning to build, properly.</h2>
+
+    <div class="mt-8 grid gap-10 lg:grid-cols-[1fr_280px]">
+      <!-- Narrative -->
+      <div class="max-w-prose space-y-4 text-muted">
+        {about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+
+      <!-- Currently learning: real, living list -->
+      <aside
+        class="h-fit rounded-lg border border-line bg-surface p-6 shadow-soft"
+        aria-labelledby="currently-learning"
+      >
+        <h3 id="currently-learning" class="font-display text-base">
+          Currently learning
+        </h3>
+        <ul class="mt-4 flex flex-wrap gap-2" role="list">
+          {
+            about.currentlyLearning.map((item) => (
+              <li>
+                <Badge>{item}</Badge>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-4 text-xs text-faint">
+          Updated as I go — this list only grows when something is real.
+        </p>
+      </aside>
+    </div>
+  </Container>
+</Section>
