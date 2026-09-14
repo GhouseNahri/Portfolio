@@ -1,0 +1,18 @@
+---
+// Section — a vertical chunk of the page with consistent rhythm.
+// Props: id (for nav anchors) and spacing size. Rendered as a real
+// <section> landmark so assistive tech can navigate the page.
+interface Props {
+  id?: string;
+  space?: "md" | "lg";
+  class?: string;
+}
+const { id, space = "lg", class: className } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={[space === "lg" ? "py-20 sm:py-28" : "py-12 sm:py-16", className]}
+>
+  <slot />
+</section>

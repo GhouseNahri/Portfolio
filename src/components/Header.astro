@@ -1,0 +1,128 @@
+---
+// Header — site navigation foundation.
+// Fixed structure (name + links + theme toggle) that future phases
+// will reuse; adding a section later means adding one link here.
+import Container from "./Container.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const links = [
+  { href: "#about", label: "About" },
+  { href: "#projects", label: "Projects" },
+  { href: "#education", label: "Education" },
+  { href: "#contact", label: "Contact" },
+];
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-line bg-background/85 backdrop-blur-md"
+>
+  <Container>
+    <nav aria-label="Main navigation" class="flex h-16 items-center justify-between">
+      <!-- Name acts as the home link -->
+      <a
+        href="/"
+        class="font-display text-lg font-semibold tracking-tight text-ink transition-colors duration-150 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
+        Ghouse<span class="text-accent">.</span>Nahri
+      </a>
+
+      <!-- Desktop links -->
+      <ul class="hidden items-center gap-1 md:flex">
+        {
+          links.map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                class="rounded-md px-3 py-2 text-sm font-medium text-muted transition-colors duration-150 hover:bg-elevated hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="flex items-center gap-2">
+        <ThemeToggle />
+        <!-- Mobile menu button: hidden on md+ screens -->
+        <button
+          id="menu-button"
+          type="button"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          aria-label="Open navigation menu"
+          class="grid size-10 place-items-center rounded-md border border-line bg-surface text-muted transition-colors duration-150 hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:hidden"
+        >
+          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path class="line-open" d="M4 7h16M4 12h16M4 17h16" />
+            <path class="line-close hidden" d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu: visually hidden unless open; hidden from a11y tree too -->
+    <ul
+      id="mobile-menu"
+      class="hidden flex-col gap-1 border-t border-line py-3 md:hidden"
+    >
+      {
+        links.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              class="block rounded-md px-3 py-2 text-sm font-medium text-muted transition-colors duration-150 hover:bg-elevated hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Container>
+</header>
+
+<script>
+  const button = document.getElementById("menu-button");
+  const menu = document.getElementById("mobile-menu");
+  const iconOpen = button?.querySelector(".line-open");
+  const iconClose = button?.querySelector(".line-close");
+
+  function setOpen(open: boolean) {
+    if (!button || !menu) return;
+    menu.classList.toggle("hidden", !open);
+    iconOpen?.classList.toggle("hidden", open);
+    iconClose?.classList.toggle("hidden", !open);
+    button.setAttribute("aria-expanded", String(open));
+    button.setAttribute(
+      "aria-label",
+      open ? "Close navigation menu" : "Open navigation menu"
+    );
+  }
+
+  button?.addEventListener("click", () =>
+    setOpen(menu?.classList.contains("hidden") ?? false)
+  );
+
+  // Close when a link inside the menu is clicked (anchors scroll away)
+  menu?.addEventListener("click", (event) => {
+    if ((event.target as HTMLElement).closest("a")) setOpen(false);
+  });
+
+  // Close on Escape so keyboard users are never trapped
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setOpen(false);
+  });
+
+  // Close when clicking outside the header
+  document.addEventListener("click", (event) => {
+    if (
+      menu &&
+      !menu.classList.contains("hidden") &&
+      !button?.contains(event.target as Node) &&
+      !menu.contains(event.target as Node)
+    ) {
+      setOpen(false);
+    }
+  });
+</script>

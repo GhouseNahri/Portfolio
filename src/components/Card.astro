@@ -1,0 +1,32 @@
+---
+// Card — the reusable surface for future Projects / Skills / Education.
+// As a real link it lifts on hover; as a plain container it stays quiet.
+interface Props {
+  href?: string;
+  class?: string;
+}
+const { href, class: className } = Astro.props;
+---
+
+{href ? (
+  <a
+    href={href}
+    class:list={[
+      "group block rounded-lg border border-line bg-surface p-6 shadow-soft",
+      "transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-accent/60 hover:shadow-lift",
+      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+      className,
+    ]}
+  >
+    <slot />
+  </a>
+) : (
+  <div
+    class:list={[
+      "rounded-lg border border-line bg-surface p-6 shadow-soft",
+      className,
+    ]}
+  >
+    <slot />
+  </div>
+)}

@@ -1,0 +1,41 @@
+---
+// Footer — minimal for now; Phase 4+ fills in real profiles & links.
+// PLACEHOLDERS: the GitHub/LinkedIn hrefs are clearly marked and get
+// real URLs in Phase 7 (Content & Personalization).
+import Container from "./Container.astro";
+
+const year = new Date().getFullYear();
+const socials = [
+  { label: "GitHub", href: "https://github.com/GhouseNahri" },
+  { label: "LinkedIn", href: "#" }, // PLACEHOLDER — real URL in Phase 7
+];
+---
+
+<footer class="border-t border-line">
+  <Container>
+    <div
+      class="flex flex-col items-center justify-between gap-4 py-8 sm:flex-row"
+    >
+      <p class="text-sm text-faint">
+        &copy; {year} Ghouse Nahri — built with Astro.
+      </p>
+      <ul class="flex items-center gap-4">
+        {
+          socials.map(({ label, href }) => (
+            <li>
+              <a
+                href={href}
+                {...(href.startsWith("http")
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+                class="text-sm font-medium text-muted transition-colors duration-150 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Container>
+</footer>

@@ -1,0 +1,55 @@
+---
+// Button — the one consistent button/CTA style across the site.
+//
+// rendered = "button": use for actions (open menu, toggle theme).
+// rendered = "a":      use for navigation (link to page/site).
+//   Rule of thumb: goes somewhere? Use `href`. Does something? Use `button`.
+//
+// Variants: primary (accent fill), secondary (surface + border), ghost (text only).
+interface Props {
+  href?: string;
+  variant?: "primary" | "secondary" | "ghost";
+  size?: "md" | "lg";
+  type?: "button" | "submit";
+  disabled?: boolean;
+  class?: string;
+}
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  type = "button",
+  disabled = false,
+  class: className,
+} = Astro.props;
+
+const Tag = href ? "a" : "button";
+
+const base =
+  "inline-flex items-center justify-center gap-2 rounded-md font-semibold " +
+  "transition-colors duration-150 ease-out select-none " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+
+const sizes = {
+  md: "px-4 py-2 text-sm",
+  lg: "px-6 py-3 text-base",
+} as const;
+
+const variants = {
+  primary:
+    "bg-accent text-on-accent hover:bg-accent-hover active:translate-y-px",
+  secondary:
+    "bg-surface text-ink border border-line hover:border-accent hover:text-accent active:translate-y-px",
+  ghost: "text-muted hover:text-accent bg-transparent",
+} as const;
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  disabled={href ? undefined : disabled || undefined}
+  aria-disabled={disabled || undefined}
+  class:list={[base, sizes[size], variants[variant], disabled && "opacity-50 pointer-events-none", className]}
+>
+  <slot />
+</Tag>
