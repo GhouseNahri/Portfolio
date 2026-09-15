@@ -49,6 +49,9 @@ const {
         } catch {
           /* private browsing: default to dark */
         }
+        // JS flag for scroll-reveal (see global.css): reveal styles only
+        // apply when JS has loaded, so content never gets stuck hidden.
+        document.documentElement.classList.add("js");
       })();
     </script>
   </head>
@@ -59,6 +62,15 @@ const {
       <slot />
     </main>
     <Footer />
+
+    <!--
+      Scroll-reveal: a <script> tag (NOT a frontmatter import) is what makes
+      Astro bundle this for the BROWSER. Frontmatter imports execute during
+      server rendering, where `document` doesn't exist — that broke the build.
+    -->
+    <script>
+      import "../scripts/reveal";
+    </script>
   </body>
 </html>
 

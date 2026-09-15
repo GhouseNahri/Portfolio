@@ -54,10 +54,15 @@
   --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.25);
   --shadow-lift: 0 8px 24px -8px rgb(0 0 0 / 0.45);
 
-  /* --- MOTION ------------------------------------------------------------ */
+  /* --- MOTION ------------------------------------------------------------
+     These two also set Tailwind v4's *default* transition duration and
+     easing, so every `transition-*` utility on the site inherits them
+     automatically — no more hardcoded per-component values. */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-timing-function: var(--ease-out-soft);
   --duration-fast: 150ms;
   --duration-base: 250ms;
+  --default-transition-duration: var(--duration-fast);
 }
 
 /* --- LIGHT THEME OVERRIDE --------------------------------------------------
@@ -147,6 +152,38 @@ html.light {
 }
 
 /* ==========================================================================
+   SCROLL REVEAL (progressive enhancement)
+   --------------------------------------------------------------------------
+   The reveal script adds a `js` class to <html> as it loads; the rules
+   below only exist under `html.js`, so content stays visible when JS
+   is missing, blocked, or slow to arrive.
+   A tiny IntersectionObserver script (src/scripts/reveal.ts) adds the
+   `is-revealed` class when a `[data-reveal]` element enters the viewport.
+   Animates opacity + transform ONLY: both are GPU-composited, so no
+   layout shifts and no jank. One shared delay via `--reveal-delay` makes
+   small groups stagger without any per-element CSS.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(1rem);
+    /* Compositor hint while animating — smoother fade, no jank.
+       Dropped again on .is-revealed so the layer isn't kept alive. */
+    will-change: opacity, transform;
+    transition:
+      opacity var(--duration-base) var(--ease-out-soft),
+      transform var(--duration-base) var(--ease-out-soft);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  html.js [data-reveal].is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+    will-change: auto;
+  }
+}
+
+/* ==========================================================================
    ACCESSIBILITY HELPERS
    ========================================================================== */
 
@@ -178,7 +215,10 @@ html.light {
 }
 
 /* Respect users who turn off animations at the OS level:
-   kill transitions/animations but keep everything usable. */
+   kill transitions/animations but keep everything usable. The reveal
+   rules above are already scoped to no-preference, so reduced-motion
+   users simply see every element immediately — no movement, nothing
+   hidden, site fully usable. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

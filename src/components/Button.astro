@@ -32,7 +32,7 @@ const Tag = href ? "a" : "button";
 
 const base =
   "inline-flex min-h-11 items-center justify-center gap-2 rounded-md font-semibold " +
-  "transition-colors duration-150 ease-out select-none " +
+  "transition-colors select-none " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 const sizes = {
@@ -47,6 +47,12 @@ const variants = {
     "bg-surface text-ink border border-line hover:border-accent hover:text-accent active:translate-y-px",
   ghost: "text-muted hover:text-accent bg-transparent",
 } as const;
+
+// Build the class list in the frontmatter so no `false` ever leaks into
+// the rendered class attribute (that's why the array is assembled here
+// instead of inline in class:list).
+const classes = [base, sizes[size], variants[variant], className];
+if (disabled) classes.push("opacity-50 pointer-events-none");
 ---
 
 <Tag
@@ -56,7 +62,7 @@ const variants = {
   type={href ? undefined : type}
   disabled={href ? undefined : disabled || undefined}
   aria-disabled={disabled || undefined}
-  class:list={[base, sizes[size], variants[variant], disabled && "opacity-50 pointer-events-none", className]}
+  class:list={classes}
 >
   <slot />
 </Tag>

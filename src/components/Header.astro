@@ -2,6 +2,13 @@
 // Header — site navigation foundation.
 // Fixed structure (name + links + theme toggle) that future phases
 // will reuse; adding a section later means adding one link here.
+//
+// Mobile menu animation: the wrapper collapses via grid-template-rows
+// (0fr → 1fr) — no JS height measuring, no magic numbers, timing comes
+// from the Phase 3 motion tokens. `visibility` keeps closed links out
+// of the tab order and the a11y tree; its transition is delayed on
+// close so the collapse finishes before links disappear. The global
+// prefers-reduced-motion kill-switch neutralizes all of it.
 import Container from "./Container.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 
@@ -22,7 +29,7 @@ const links = [
       <!-- Name acts as the home link -->
       <a
         href="/"
-        class="font-display text-lg font-semibold tracking-tight text-ink transition-colors duration-150 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        class="font-display text-lg font-semibold tracking-tight text-ink transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         Ghouse<span class="text-accent">.</span>Nahri
       </a>
@@ -34,7 +41,7 @@ const links = [
             <li>
               <a
                 href={href}
-                class="rounded-md px-3 py-2 text-sm font-medium text-muted transition-colors duration-150 hover:bg-elevated hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                class="rounded-md px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-elevated hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 {label}
               </a>
@@ -52,7 +59,7 @@ const links = [
           aria-expanded="false"
           aria-controls="mobile-menu"
           aria-label="Open navigation menu"
-          class="grid size-11 place-items-center rounded-md border border-line bg-surface text-muted transition-colors duration-150 hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:hidden"
+          class="grid size-11 place-items-center rounded-md border border-line bg-surface text-muted transition-colors hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:hidden"
         >
           <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <path class="line-open" d="M4 7h16M4 12h16M4 17h16" />
@@ -62,26 +69,56 @@ const links = [
       </div>
     </nav>
 
-    <!-- Mobile menu: visually hidden unless open; hidden from a11y tree too -->
-    <ul
-      id="mobile-menu"
-      class="hidden flex-col gap-1 border-t border-line py-3 md:hidden"
-    >
-      {
-        links.map(({ href, label }) => (
-          <li>
-            <a
-              href={href}
-              class="block rounded-md px-3 py-3 text-sm font-medium text-muted transition-colors duration-150 hover:bg-elevated hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-            >
-              {label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <!--
+      Mobile menu: the .menu-inner div (overflow:hidden, NO padding of its
+      own) is what collapses — padding/border live on the <ul> inside so
+      the wrapper can shrink all the way to zero height.
+    -->
+    <div id="mobile-menu" class="menu-wrap md:hidden" data-open="false">
+      <div class="menu-inner">
+        <ul class="flex flex-col gap-1 border-t border-line py-3">
+          {
+            links.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  class="block rounded-md px-3 py-3 text-sm font-medium text-muted transition-colors hover:bg-elevated hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
   </Container>
 </header>
+
+<style>
+  /* Animated collapse: grid-template-rows interpolates between 0fr and
+     1fr in modern browsers — the clean CSS-only alternative to animating
+     height:auto. The inner div carries overflow:hidden + visibility but
+     no padding, so it can collapse fully to zero. */
+  .menu-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration-fast) var(--ease-out-soft);
+  }
+  .menu-wrap[data-open="true"] {
+    grid-template-rows: 1fr;
+  }
+  .menu-inner {
+    min-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: visibility 0s var(--duration-fast); /* hide after collapse */
+  }
+  .menu-wrap[data-open="true"] .menu-inner {
+    visibility: visible;
+    transition: visibility 0s; /* show immediately on open */
+  }
+</style>
 
 <script>
   const button = document.getElementById("menu-button");
@@ -89,9 +126,11 @@ const links = [
   const iconOpen = button?.querySelector(".line-open");
   const iconClose = button?.querySelector(".line-close");
 
+  const isOpen = () => menu?.getAttribute("data-open") === "true";
+
   function setOpen(open: boolean) {
     if (!button || !menu) return;
-    menu.classList.toggle("hidden", !open);
+    menu.setAttribute("data-open", String(open));
     iconOpen?.classList.toggle("hidden", open);
     iconClose?.classList.toggle("hidden", !open);
     button.setAttribute("aria-expanded", String(open));
@@ -101,29 +140,36 @@ const links = [
     );
   }
 
-  button?.addEventListener("click", () =>
-    setOpen(menu?.classList.contains("hidden") ?? false)
-  );
+  button?.addEventListener("click", () => setOpen(!isOpen()));
 
   // Close when a link inside the menu is clicked (anchors scroll away)
   menu?.addEventListener("click", (event) => {
     if ((event.target as HTMLElement).closest("a")) setOpen(false);
   });
 
-  // Close on Escape so keyboard users are never trapped
+  // Close on Escape so keyboard users are never trapped; hand focus back
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setOpen(false);
+    if (event.key === "Escape" && isOpen()) {
+      setOpen(false);
+      button?.focus();
+    }
   });
 
   // Close when clicking outside the header
   document.addEventListener("click", (event) => {
     if (
-      menu &&
-      !menu.classList.contains("hidden") &&
+      isOpen() &&
       !button?.contains(event.target as Node) &&
-      !menu.contains(event.target as Node)
+      !menu?.contains(event.target as Node)
     ) {
       setOpen(false);
     }
+  });
+
+  // If the viewport grows past md while the menu is open, reset state so
+  // rotating/shrinking back doesn't restore a stale open menu.
+  const desktop = window.matchMedia("(min-width: 768px)");
+  desktop.addEventListener("change", (event) => {
+    if (event.matches) setOpen(false);
   });
 </script>

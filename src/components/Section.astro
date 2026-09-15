@@ -5,12 +5,17 @@
 //
 // `scroll-mt-24`: when a nav link jumps to #id, this keeps the section
 // heading 6rem below the top — clear of the 64px (4rem) sticky header.
+//
+// `reveal`: opt-in scroll reveal — wraps the section's inner content in a
+// single [data-reveal] wrapper so a whole section fades in as one unit
+// (subtle by design; individual elements are never animated separately).
 interface Props {
   id?: string;
   space?: "md" | "lg";
+  reveal?: boolean;
   class?: string;
 }
-const { id, space = "lg", class: className } = Astro.props;
+const { id, space = "lg", reveal = false, class: className } = Astro.props;
 ---
 
 <section
@@ -21,5 +26,5 @@ const { id, space = "lg", class: className } = Astro.props;
     className,
   ]}
 >
-  <slot />
+  {reveal ? <div data-reveal> <slot /> </div> : <slot />}
 </section>
