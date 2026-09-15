@@ -1,8 +1,9 @@
 // ==========================================================================
 // SITE DATA — the single source of truth for personal content.
 // Sections import from here, so updating content never means touching
-// component markup. Anything marked PLACEHOLDER waits on real info
-// (Phase 7 — Content & Personalization). We never invent facts.
+// component markup. Content was personalized in Phase 7 from the approved
+// content specification. We never invent facts: empty sections stay empty
+// until things are real.
 // ==========================================================================
 
 export const site = {
@@ -14,67 +15,87 @@ export const site = {
   // Real (Phase 1): the portfolio exists to win internship opportunities.
   availability: "Open to internship opportunities",
   github: "https://github.com/GhouseNahri",
-  // PLACEHOLDER: add your LinkedIn URL here when ready — links wire up automatically.
+  // Phase 7: no LinkedIn yet — the link appears automatically once a URL
+  // is added here.
   linkedin: "",
-  // Privacy choice (Phase 1): email stays hidden; visitors use the form or GitHub.
+  // Privacy choice (Phase 1, re-confirmed Phase 7): email stays hidden;
+  // visitors use the form or GitHub.
   email: "",
-  // PLACEHOLDER: no resume yet — add a path/URL when it exists.
+  // No resume yet — add a path/URL when it exists and the button wires up.
   resume: "",
 } as const;
 
+// Phase 7 (approved): origin = curiosity; this portfolio is the first
+// real project; cyber security is named strictly as an interest, never
+// as a skill.
 export const about = {
-  // Drafted from your Phase 1 answers — review & personalize in Phase 7.
   paragraphs: [
-    "I'm Ghouse, an IT student at the start of my developer journey. Right now I'm strengthening my fundamentals — Python for everyday problem solving, and C for understanding what's really happening inside data structures.",
-    "I care about learning things properly rather than quickly: writing code that works, understanding why it works, and improving it. This portfolio is part of that — every project here is real, built by me, and documented honestly, including what I found difficult.",
-    "I'm looking for an internship where I can contribute, ask a lot of questions, and learn how real software teams work.",
+    "I'm Ghouse, an IT student at Matrusri Engineering College at the start of my developer journey. I got here through plain curiosity about how things work — and that curiosity shapes how I learn: fundamentals first. Python for everyday problem solving, C for understanding what's really happening inside data structures.",
+    "I care about learning things properly rather than quickly: writing code that works, understanding why it works, and improving it. This portfolio is my first real project — built with an AI-assisted workflow that I drive: every design decision, every test, every commit is mine. My curiosity is now also pulling toward cyber security — learning how systems fail is the same question, asked from the other side.",
+    "I'm looking for an internship where I can contribute, ask a lot of questions, and learn how real software teams work. Meanwhile, I keep sharpening the fundamentals and building things here, one honest project at a time.",
   ],
-  // What I'm currently learning — shown as chips in the About section.
-  currentlyLearning: ["Python", "C — data structures", "HTML & CSS"],
+  // Currently learning — shown as chips in the About section. Python
+  // graduated out in Phase 7: it's a listed skill now, not a learning
+  // item. Security fundamentals joins as an approved, honest interest.
+  currentlyLearning: ["Data structures", "Security fundamentals", "HTML & CSS"],
 } as const;
 
+// Phase 7 (approved): regrouped after building this portfolio — every
+// item below has been genuinely used in this very project. The footnote
+// is a self-assessment rendered under the grid; never percentages.
 export const skills = {
-  // Real skills only (Phase 1). No proficiency bars, no invented tools.
   groups: [
     {
       label: "Languages",
-      items: ["Python", "C"],
+      items: ["Python", "C", "TypeScript"],
     },
     {
-      label: "Web basics",
-      items: ["HTML", "CSS"],
+      label: "Web & frameworks",
+      items: ["HTML", "CSS", "Tailwind CSS", "Astro"],
     },
     {
-      label: "Currently learning",
-      items: ["Data structures", "Git & GitHub"],
+      label: "Tools & workflow",
+      items: ["Git & GitHub", "VS Code", "AI-assisted development"],
+    },
+  ],
+  footnote:
+    "Self-assessed: comfortable with Python · familiar with C · Astro, Tailwind and TypeScript new and growing.",
+} as const;
+
+// Phase 7 (approved): the portfolio itself is the first listed project —
+// real, in-progress until Phase 8 deployment, with the AI-assisted
+// workflow stated openly. Add further projects newest-first:
+//
+// {
+//   title: "Personal Portfolio Website",
+//   description: "...",
+//   tech: ["Astro", "TypeScript", "Tailwind CSS"],
+//   status: "in-progress" | "live" | "archived",
+//   github: "https://github.com/GhouseNahri/portfolio",
+//   demo: "", // live URL if one exists
+// },
+export const projects = {
+  items: [
+    {
+      title: "Personal Portfolio Website",
+      description:
+        "The site you're looking at — built in phases like real software: design system first, sections one at a time, each tested and committed before moving on. An AI-assisted workflow that I drive: every decision and commit is mine.",
+      tech: ["Astro", "TypeScript", "Tailwind CSS"],
+      status: "in-progress",
+      github: "https://github.com/GhouseNahri/portfolio",
+      demo: "",
     },
   ],
 } as const;
 
-export const projects = {
-  // REAL PROJECTS GO HERE as they're built — newest first:
-  //
-  // {
-  //   title: "Project name",
-  //   description: "One or two sentences: what it does and why it exists.",
-  //   tech: ["Python"],
-  //   status: "in-progress" | "live" | "archived",
-  //   github: "https://github.com/GhouseNahri/...",
-  //   demo: "", // live URL if one exists
-  // },
-  //
-  // Empty for now is honest — the first project is being planned together.
-  items: [],
-} as const;
-
+// Phase 7 (approved): real details replace the Phase 1 placeholder.
 export const education = {
-  // PLACEHOLDER (Phase 1): details pending — fill in when ready.
   entries: [
     {
-      degree: "IT degree", // PLACEHOLDER — e.g. "B.Tech in Information Technology"
-      institution: "Institution name", // PLACEHOLDER
-      period: "20XX — 20XX", // PLACEHOLDER — expected graduation
-      note: "", // optional: relevant coursework
+      degree: "B.Tech in Information Technology",
+      institution: "Matrusri Engineering College",
+      period: "2025 — 2029",
+      note: "", // optional: relevant coursework — intentionally empty
     },
   ],
 } as const;
