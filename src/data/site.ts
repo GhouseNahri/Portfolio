@@ -82,7 +82,7 @@ export const projects = {
       description:
         "The site you're looking at — built in phases like real software: design system first, sections one at a time, each tested and committed before moving on. An AI-assisted workflow that I drive: every decision and commit is mine.",
       tech: ["Astro", "TypeScript", "Tailwind CSS"],
-      status: "in-progress",
+      status: "live",
       github: "https://github.com/GhouseNahri/portfolio",
       demo: "",
     },

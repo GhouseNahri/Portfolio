@@ -5,10 +5,10 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  // DEPLOYMENT DAY (Phase 8 audit #3): set the real public URL here, e.g.
-  //   site: 'https://ghousenahri.github.io',
-  // BaseLayout then emits <link rel="canonical"> + og:url automatically.
-  // Never invented before the domain exists.
+  // Real production URL (deployed on Vercel, verified live). BaseLayout
+  // emits <link rel="canonical">, og:url and the JSON-LD url from this.
+  // If the site ever moves to a custom domain, change it here.
+  site: 'https://portfolio-alpha-three-20.vercel.app',
   vite: {
     plugins: [tailwindcss()]
   }

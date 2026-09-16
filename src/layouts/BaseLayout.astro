@@ -21,8 +21,8 @@ const {
     "IT student building solid foundations in Python, C and the web — learning by making real things. Open to internship opportunities.",
 } = Astro.props;
 
-// Canonical URL + og:url activate only once a real domain exists — set
-// `site` in astro.config.mjs on deployment day (never invent a URL).
+// Canonical URL + og:url come from `site` in astro.config.mjs (the real
+// production URL, set at deployment).
 const canonical = Astro.site?.href;
 
 // Social preview image: root-relative works on any host; becomes absolute
