@@ -38,7 +38,7 @@ const jsonLd = {
   name: site.name,
   jobTitle: site.role,
   description,
-  sameAs: [site.github],
+  sameAs: [site.github, site.linkedin].filter(Boolean),
   alumniOf: {
     "@type": "CollegeOrUniversity",
     name: edu.institution,
