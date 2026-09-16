@@ -197,6 +197,17 @@ html.light {
   border-radius: var(--radius-sm);
 }
 
+/* Minimum touch targets (Phase 9 QA): text links without intrinsic
+   padding — the header logo and footer socials — must still offer a
+   44px hit area, the same discipline the icon buttons and form controls
+   follow. Grows the hit box only; visible styling is unchanged. */
+header a[href="/"],
+footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 /* Skip link: invisible until keyboard-focused, then first thing on screen.
    Lets keyboard users jump straight past the navigation. */
 .skip-link {

@@ -20,6 +20,12 @@ interface Props {
 }
 const { project } = Astro.props;
 
+// External URLs open in a new tab with noopener (same convention as every
+// other external link on the site — user decision, Phase 9). A future
+// relative demo URL would stay same-tab.
+const projectUrl = project.demo || project.github;
+const isExternal = projectUrl.startsWith("http");
+
 const statusLabels = {
   "in-progress": "in progress",
   live: "live",
@@ -27,7 +33,11 @@ const statusLabels = {
 } as const;
 ---
 
-<Card href={project.demo || project.github}>
+<Card
+  href={projectUrl}
+  target={isExternal ? "_blank" : undefined}
+  rel={isExternal ? "noopener noreferrer" : undefined}
+>
   <div class="flex items-center justify-between gap-3">
     <h3 class="font-display text-lg">{project.title}</h3>
     <Badge

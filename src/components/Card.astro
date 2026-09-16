@@ -8,15 +8,20 @@
 // (Phase 3 tokens: 150ms, ease-out-soft), so nothing is hardcoded here.
 interface Props {
   href?: string;
+  /** Pass-through for external links (Phase 9: cards link off-site too). */
+  target?: string;
+  rel?: string;
   class?: string;
 }
-const { href, class: className } = Astro.props;
+const { href, target, rel, class: className } = Astro.props;
 ---
 
 {
   href ? (
     <a
       href={href}
+      target={target}
+      rel={rel}
       class:list={[
         "group block rounded-lg border border-line bg-surface p-6 shadow-soft",
         "transition-[border-color,box-shadow,transform] ease-out-soft duration-base",
