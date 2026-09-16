@@ -110,9 +110,20 @@ import { site } from "../../data/site";
 <script>
   const form = document.getElementById("contact-form") as HTMLFormElement | null;
   const status = document.getElementById("contact-status");
+  const fields = form
+    ? Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+        "input, textarea"
+      ))
+    : [];
 
   form?.addEventListener("submit", (event) => {
     event.preventDefault(); // no backend yet — do NOT pretend anything was sent
+
+    // aria-invalid gives screen readers explicit field state alongside
+    // the native bubbles; "false" on valid fields is the cleared state.
+    for (const field of fields) {
+      field.setAttribute("aria-invalid", String(!field.checkValidity()));
+    }
 
     if (!form.reportValidity()) return; // browser shows field errors
 

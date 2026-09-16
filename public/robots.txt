@@ -1,0 +1,7 @@
+# Allow all crawlers everywhere. (Phase 8 audit: single-page portfolio,
+# nothing to disallow.) The sitemap line activates on deployment day once
+# the real domain exists — never invented before then.
+User-agent: *
+Allow: /
+
+# Sitemap: https://YOUR-DOMAIN/sitemap-index.xml

@@ -51,6 +51,10 @@
     } catch {
       /* private browsing: in-memory theme only */
     }
+    // Keep the phone browser chrome in sync with the manual override.
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", nowLight ? "#f5f8f8" : "#0b1015");
     syncPressed();
   });
 </script>

@@ -26,7 +26,9 @@
   --color-elevated: #182129;
   --color-ink: #e6edf3;
   --color-muted: #919ea9;
-  --color-faint: #6f7a85;
+  /* Faint: #7d8894 = 5.05:1 on surface (WCAG AA pass). The previous
+     #6f7a85 measured 4.16:1 — under the 4.5:1 minimum. */
+  --color-faint: #7d8894;
   --color-line: #1f2933;
   --color-accent: #2dd4bf;
   --color-accent-hover: #5eead4;
