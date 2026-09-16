@@ -1,43 +1,59 @@
-# Astro Starter Kit: Minimal
+# Ghouse Nahri — Portfolio
+
+My personal developer portfolio: a single-page site introducing who I am,
+what I'm learning, and what I've built — as an IT student and aspiring
+software developer.
+
+Built with [Astro](https://astro.build), [Tailwind CSS](https://tailwindcss.com),
+and TypeScript. It ships almost zero client-side JavaScript: static HTML,
+a tiny scroll-reveal powered by the native `IntersectionObserver`, and a
+theme persisted in `localStorage` with system-preference detection.
+
+## Features
+
+- Dark / light theme with system detection and persistence
+- Responsive from small phones (320px) to ultra-wide desktops
+- Accessibility: skip link, visible focus states, reduced-motion support,
+  44px minimum touch targets, labeled form fields
+- SEO: Open Graph & Twitter cards, JSON-LD `Person` structured data,
+  `robots.txt`, social preview image
+- Honest content: sections render only what actually exists — no fake
+  projects, stats, or testimonials
+
+## Getting started
+
+Requires Node.js >= 22.12.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev       # dev server at http://localhost:4321
+npm run build     # production build → dist/
+npm run preview   # serve the production build locally
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## Project structure
 
 ```text
 /
-├── public/
+├── public/            # static assets (favicons, og-image, robots.txt)
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/    # UI primitives + page sections
+│   ├── data/site.ts   # ← all personal content lives here
+│   ├── layouts/       # base HTML layout, meta & structured data
+│   ├── pages/         # routes
+│   ├── scripts/       # small client enhancements
+│   └── styles/        # design tokens & global styles
+└── astro.config.mjs
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Customizing content
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Everything personal — name, tagline, skills, projects, education, links —
+is data in `src/data/site.ts`. Update it and every section follows;
+there is no content buried in component markup.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Deployment
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Static output — deployable to any static host (Vercel, Netlify,
+Cloudflare Pages) with build command `npm run build` and output
+directory `dist`.
