@@ -15,10 +15,10 @@ export const site = {
   // Real (Phase 1): the portfolio exists to win internship opportunities.
   availability: "Open to internship opportunities",
   github: "https://github.com/GhouseNahri",
-  // Added after Phase 7: real profile URL, provided by Ghouse and shown
-  // in the footer automatically. The auto-generated slug can be customized
-  // later in LinkedIn settings without touching this file.
-  linkedin: "https://www.linkedin.com/in/ghouse-undefined-441820437",
+  // Real profile URL (updated 2026-09-17 at Ghouse's request to the
+  // full public-profile slug). Shown in the footer, contact section and
+  // JSON-LD sameAs automatically.
+  linkedin: "https://www.linkedin.com/in/syed-ghouse-hussaini-nahri-441820437",
   // Privacy choice (Phase 1, re-confirmed Phase 7): email stays hidden;
   // visitors use the form or GitHub.
   email: "",

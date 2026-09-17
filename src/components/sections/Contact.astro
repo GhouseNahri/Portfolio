@@ -20,9 +20,9 @@ import { site } from "../../data/site";
         <p class="mt-4 max-w-prose text-muted">
           Want to discuss an internship, collaborate on something, or just
           say hi? The form is the fastest way to reach me — or find me on
-          GitHub.
+          GitHub and LinkedIn.
         </p>
-        <div class="mt-6">
+        <div class="mt-6 flex flex-wrap gap-3">
           <Button
             href={site.github}
             variant="secondary"
@@ -31,6 +31,18 @@ import { site } from "../../data/site";
           >
             GitHub&nbsp;↗
           </Button>
+          {
+            site.linkedin && (
+              <Button
+                href={site.linkedin}
+                variant="secondary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn&nbsp;↗
+              </Button>
+            )
+          }
         </div>
       </div>
 
