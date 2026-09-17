@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Portfolio Admin</title>
+    <link rel="stylesheet" href="/admin.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <strong>Portfolio Admin</strong>
+        <span class="badge-local">local only</span>
+      </div>
+      <div class="actions">
+        <span id="git-status" class="git-status"></span>
+        <button id="btn-discard" class="btn btn-ghost" type="button">Discard draft</button>
+        <button id="btn-publish" class="btn btn-primary" type="button">Publish</button>
+        <button id="btn-save" class="btn btn-primary" type="button">Save draft</button>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <aside class="nav">
+        <button class="navlink active" data-view="profile">Profile</button>
+        <button class="navlink" data-view="about">About</button>
+        <button class="navlink" data-view="skills">Skills</button>
+        <button class="navlink" data-view="projects">Projects</button>
+        <button class="navlink" data-view="education">Education</button>
+        <button class="navlink" data-view="seo">SEO</button>
+        <button class="navlink" data-view="publish">Publish</button>
+        <div class="helpbox">
+          <strong>How this works</strong>
+          <p>1. Edit any field. 2. <b>Save draft</b> — writes your changes locally; the live site is unchanged. 3. <b>Publish</b> — commits and pushes; Vercel redeploys in about 30 seconds.</p>
+          <p>Hover any field's <b>?</b> for help.</p>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div id="view-profile" class="view">
+          <h1>Profile</h1>
+          <p class="view-intro">Your identity — shown in the hero, header, footer and search results.</p>
+          <div class="grid2">
+            <label>Name <span class="q" data-help="Your full name, e.g. in the hero heading.">?</span><input id="f-name" /></label>
+            <label>First name <span class="q" data-help="Used for friendly phrasing, e.g. the About intro.">?</span><input id="f-firstName" /></label>
+            <label>Professional title <span class="q" data-help="Shown next to your name in the hero and in the browser tab title.">?</span><input id="f-role" /></label>
+            <label>Availability <span class="q" data-help="A small honest status line in the hero, e.g. “Open to internship opportunities”. Leave empty to hide.">?</span><input id="f-availability" /></label>
+            <label class="span2">Tagline <span class="q" data-help="One or two sentences under your name in the hero. Say what you're doing and learning.">?</span><textarea id="f-tagline" rows="2"></textarea></label>
+            <label>GitHub URL <span class="q" data-help="Used in the footer, contact buttons and search-engine profile links. Must be a valid http(s) URL.">?</span><input id="f-github" type="url" /></label>
+            <label>LinkedIn URL <span class="q" data-help="Same places as GitHub. Must be a valid http(s) URL.">?</span><input id="f-linkedin" type="url" /></label>
+            <label>Email <span class="q" data-help="Leave empty — your Phase 1 privacy choice. Fill only if you decide to show it publicly.">?</span><input id="f-email" /></label>
+            <label class="span2">SEO description <span class="q" data-help="Shown in Google results and when you share the site. 120–160 characters is ideal.">?</span><textarea id="f-seo-description" rows="3"></textarea></label>
+          </div>
+        </div>
+
+        <div id="view-about" class="view" hidden>
+          <h1>About section</h1>
+          <p class="view-intro">The paragraphs tell your story; the learning chips show what you're focusing on right now.</p>
+          <div id="about-paragraphs"></div>
+          <button class="btn btn-ghost" id="btn-add-paragraph" type="button">+ Add paragraph</button>
+          <h2>Currently learning</h2>
+          <p class="field-hint">One item per chip — short names work best (e.g. “Data structures”).</p>
+          <div id="about-learning"></div>
+          <button class="btn btn-ghost" id="btn-add-learning" type="button">+ Add learning item</button>
+        </div>
+
+        <div id="view-skills" class="view" hidden>
+          <h1>Skills</h1>
+          <p class="view-intro">Grouped skill chips. Only list things you have genuinely used — the site's honesty rule.</p>
+          <div id="skills-groups"></div>
+          <button class="btn btn-ghost" id="btn-add-group" type="button">+ Add group</button>
+          <label class="footnote-label">Footnote <span class="q" data-help="A single honest line under the skills grid, e.g. self-assessment summary.">?</span><input id="f-skills-footnote" /></label>
+        </div>
+
+        <div id="view-projects" class="view" hidden>
+          <h1>Projects</h1>
+          <p class="view-intro">Newest first — the first project gets the featured spot.</p>
+          <div id="projects-list"></div>
+          <button class="btn btn-ghost" id="btn-add-project" type="button">+ Add project</button>
+        </div>
+
+        <div id="view-education" class="view" hidden>
+          <h1>Education</h1>
+          <p class="view-intro">Your studies. The first entry feeds the search-engine profile automatically.</p>
+          <div id="education-list"></div>
+          <button class="btn btn-ghost" id="btn-add-education" type="button">+ Add education</button>
+        </div>
+
+        <div id="view-seo" class="view" hidden>
+          <h1>SEO</h1>
+          <p class="view-intro">How your site appears in search results and social shares. The page title is built automatically as “Name — Title”.</p>
+          <div class="preview-box">
+            <div class="seo-title" id="seo-preview-title"></div>
+            <div class="seo-url">portfolio-alpha-three-20.vercel.app</div>
+            <div class="seo-desc" id="seo-preview-desc"></div>
+          </div>
+          <p class="field-hint">Edit the description in the Profile tab — the preview updates as you type.</p>
+        </div>
+
+        <div id="view-publish" class="view" hidden>
+          <h1>Publish</h1>
+          <div class="publish-status" id="publish-status"></div>
+          <label>Publish message <span class="q" data-help="A short note describing what you changed — shown in your GitHub history.">?</span><input id="f-publish-message" placeholder="Update portfolio content via admin" /></label>
+          <button class="btn btn-primary" id="btn-publish-2" type="button">Publish now</button>
+          <h2>Recent content history</h2>
+          <ul class="history" id="publish-history"></ul>
+          <p class="field-hint">Made a mistake? Any line here can be undone with <code>git revert &lt;hash&gt;</code> — or ask me to build a one-click undo.</p>
+        </div>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+    <script src="/admin.js"></script>
+  </body>
+</html>

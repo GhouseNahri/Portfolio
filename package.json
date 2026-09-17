@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "admin": "node admin/admin.mjs",
     "astro": "astro"
   },
   "dependencies": {

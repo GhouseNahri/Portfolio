@@ -17,8 +17,9 @@ interface Props {
 
 const {
   title,
-  description =
-    "IT student building solid foundations in Python, C and the web — learning by making real things. Open to internship opportunities.",
+  // Default meta description — editable in the local admin
+  // (src/data/site.ts → site.seo.description).
+  description = site.seo.description,
 } = Astro.props;
 
 // Canonical URL + og:url come from `site` in astro.config.mjs (the real

@@ -24,6 +24,12 @@ export const site = {
   email: "",
   // No resume yet — add a path/URL when it exists and the button wires up.
   resume: "",
+  // SEO (editable in the local admin): the homepage's default meta
+  // description — also used for Open Graph / Twitter cards.
+  seo: {
+    description:
+      "IT student building solid foundations in Python, C and the web — learning by making real things. Open to internship opportunities.",
+  },
 } as const;
 
 // Phase 7 (approved): origin = curiosity; this portfolio is the first

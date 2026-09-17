@@ -8,9 +8,10 @@ import Skills from "../components/sections/Skills.astro";
 import Projects from "../components/sections/Projects.astro";
 import Education from "../components/sections/Education.astro";
 import Contact from "../components/sections/Contact.astro";
+import { site } from "../data/site";
 ---
 
-<BaseLayout title="Ghouse Nahri — IT Student & Aspiring Software Developer">
+<BaseLayout title={`${site.name} — ${site.role}`}>
   <Hero />
   <About />
   <Skills />
