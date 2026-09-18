@@ -36,5 +36,27 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Reduced motion is unaffected (nothing animates). Zero visual delta:
-   verified against production before this file existed. */
+/* The dot of the final "i" is tinted with the site's own accent color
+   (--color-accent). The glyph can't be partially colored, so the trick
+   is a hard-stop background gradient clipped to the text itself:
+   the top slice — where the dot sits — takes the accent color, and the
+   stem below keeps the exact ink color the rest of the name uses.
+   background-clip: text affects only this one-letter span; spacing,
+   layout, font and animation are untouched. */
+.idot-wrap {
+  color: transparent;
+  /* 32.3% = calibrated midpoint of the gap between Space Grotesk's dot
+     and stem at the h1's weight/size (dot ends ≈29.4%, stem starts
+     ≈35.2% of the painted box). --idot-boundary is overridable. */
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-accent) 0 var(--idot-boundary, 32.3%),
+    var(--color-ink) var(--idot-boundary, 32.3%)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Reduced motion is unaffected (nothing animates). Nothing else on the
+   page is affected: the rules above are scoped to .idot-wrap — the
+   one-letter span of the final "i" in the hero name. */
