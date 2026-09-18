@@ -1,100 +1,137 @@
-# Personal Portfolio — Ghouse Nahri
+# Ghouse Nahri — Personal Portfolio
 
-Live: **https://portfolio-alpha-three-20.vercel.app** · Repo: `GhouseNahri/portfolio`
+Hi, I'm **Ghouse Nahri** — an IT student and aspiring software developer. I'm currently
+learning and improving my programming skills, and this portfolio is how I do it:
+by building real projects and understanding how software actually works, one honest
+step at a time.
 
-A fast, accessible, fully static portfolio for an IT student — plus a private,
-authenticated admin system for editing content without touching code.
+## 🌐 Live Website
 
-## Tech stack
+**→ [https://portfolio-alpha-three-20.vercel.app](https://portfolio-alpha-three-20.vercel.app/)**
 
-- **Astro 7** — 100% static public pages, zero client JS beyond scroll-reveal + the tiny hidden admin trigger
-- **Tailwind CSS 4** with a semantic design-token system (`src/styles/global.css`)
-- **@astrojs/vercel** adapter — public pages remain static files; `/admin` + `/api/admin/*` run as secure serverless functions
-- Content lives in **one file**: `src/data/site.ts`. Components are pure presentation.
+## 📌 About the Project
 
-## Private admin system
+A personal developer portfolio built to present who I am and what I can do:
 
-The public site has **no admin link** — by design. Access:
+- **Hero** — name, role, availability badge, quick links
+- **About** — my story, what I'm currently learning, and how I work
+- **Skills** — grouped by Languages, Web & Frameworks, and Tools & Workflow
+- **Projects** — starting with this portfolio itself, built in phased, tested increments
+- **Education** — B.Tech in Information Technology at Matrusri Engineering College
+- **Contact** — GitHub, LinkedIn, and a validated contact form
 
-1. Go to the live site → find the **dot of the final “i” in “Nahri”** (hero headline)
-2. **Click it 5 times within 3 seconds** → the login page opens at `/admin`
-3. Enter your Admin ID + password (verified server-side; signed session cookie, 2 h)
+Everything on the site is real: no invented projects, no inflated skills, no fake
+statistics. Content lives in one typed data file, so the site never claims anything
+I can't back up.
 
-The trigger is a doorbell, not a lock — discovering it gains nothing without credentials.
+## ✨ Features
 
-### Editing content (beginner workflow)
+- **Fully responsive design** — tested from 320px phones to ultra-wide desktops
+- **Dark / light theme** — respects system preference, remembers your choice, no flash on load
+- **Scroll-reveal animations** — GPU-composited, honors `prefers-reduced-motion`
+- **Accessible by design** — semantic HTML, skip link, visible focus states, keyboard navigation, 44px touch targets, WCAG-checked contrast
+- **SEO-ready** — semantic headings, meta description, canonical URL, Open Graph + Twitter cards, JSON-LD structured data (Person), robots.txt, social preview image
+- **Zero-JS public pages** — the portfolio is pre-built static HTML; the only browser scripts are scroll-reveal and a tiny hidden trigger (~1 KB)
+- **Private content admin** — a hidden 5-click trigger on the "i" in my name opens an
+  authenticated dashboard (server-side scrypt auth, signed session cookies) where I can
+  edit every section and publish changes straight from the browser — no code required
+- **One-click undo** — every publish is a git commit, so any past version of the content is one revert away
 
-1. Open `/admin` (see above) → dashboard
-2. Edit fields — every field is plain language; SEO description has a live Google-result preview
-3. **Publish changes** → committed to `main` via GitHub API → Vercel redeploys → **live in ~30–60s**
-4. Made a mistake? **Publish → Content history → Revert** (one click restores any past version)
+## 🛠️ Tech Stack
 
-Deletions ask for confirmation; every published state is a git commit — the full backup
-is your repository history.
-
-### Environment variables (names only — set in the Vercel dashboard)
-
-| Name | Purpose |
+| Layer | Technology |
 |---|---|
-| `ADMIN_USERNAME` | your Admin ID |
-| `ADMIN_PASSWORD_HASH` | output of `npm run admin:set-password` (scrypt hash — never the plain password) |
-| `SESSION_SECRET` | random 32-byte key signing session cookies — `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"` |
-| `GITHUB_TOKEN` | fine-grained PAT, repository access: `GhouseNahri/portfolio` only, permission: **Contents → Read and write** |
+| Framework | **Astro 7** (static output + serverless routes via the official Vercel adapter) |
+| Styling | **Tailwind CSS 4** with a semantic design-token system |
+| Language | **TypeScript** (strict mode) |
+| Fonts | Space Grotesk, Inter, JetBrains Mono (self-hosted via Fontsource) |
+| Admin auth | Node built-in `crypto` — scrypt hashing, HMAC-signed sessions (no auth dependency) |
+| Deployment | **Vercel** (Git-based auto-deploy from `main`) |
+| Version control | Git + GitHub |
 
-Set them under Vercel → your project → Settings → Environment Variables, then **Deployments → ⋯ → Redeploy**.
-
-### Recovery paths (you can never be locked out)
-
-- **Forgot the password?** Run `npm run admin:set-password`, paste the new hash into `ADMIN_PASSWORD_HASH`, redeploy.
-- **Token expired/revoked?** Create a new PAT, replace `GITHUB_TOKEN`, redeploy.
-- **Bad content published?** Dashboard → Publish → history → **Revert**, or a normal `git revert` from a terminal.
-
-### Two admins — same file, same format
-
-| | **Online dashboard** (`/admin`) | **Local admin** (`npm run admin`, port 4322) |
-|---|---|---|
-| Where it runs | Anywhere (browser), behind authentication | This PC only (127.0.0.1) |
-| Auth | Server-side ID + password + session cookie | Loopback-only, no auth (by design) |
-| Publish | GitHub API → auto-redeploy | git commit + push |
-| Preview | Publish and watch the live site (30–60s) | Save draft → `npm run dev`… blocked on this PC by Smart App Control |
-| Best for | Editing from anywhere | Offline, no-token editing + direct file access |
-
-Both write `src/data/site.ts` with the same shared generator (`src/lib/siteGenerator.ts`),
-so the file format stays byte-identical whichever tool you use.
-
-### Site maintenance notes
-
-- SEO config lives in `astro.config.mjs` (`site:`) — canonical, og:url and JSON-LD derive from it.
-- The project card status values are `in-progress | live | archived`; first project = featured.
-- Deploy preview command: `npm run preview` after `npm run build` (desktop only — this PC's
-  Smart App Control currently blocks Astro binaries; **Vercel builds fine on Linux** — the
-  adapter + build is verified in the Vercel build log on every push).
-
-## Project structure
+## 📂 Project Structure
 
 ```
-src/
-├── components/           # Pure presentation, one section per file
-│   ├── sections/         # Hero, About, Skills, Projects, Education, Contact
-│   ├── Header.astro      # Sticky nav + theme toggle
-│   └── Footer.astro      # Socials + copyright
-├── data/site.ts          # ← ALL content lives here (the admin edits this)
-├── layouts/BaseLayout.astro  # Meta, fonts, theme, structured data
-├── lib/                  # siteGenerator (byte-faithful site.ts writer),
-│                         # auth (scrypt + sessions), serverContent
-├── pages/
-│   ├── index.astro       # The public portfolio
-│   ├── admin.astro       # Private admin (server-rendered, noindex)
-│   └── api/admin/*.ts    # login · logout · session · content · publish · history · revert
-├── scripts/              # Browser scripts (reveal, adminTrigger)
-└── styles/               # global.css tokens + adminTrigger.css
+portfolio/
+├── src/
+│   ├── components/          # UI building blocks (Header, Footer, cards, buttons…)
+│   │   └── sections/        # Page sections: Hero, About, Skills, Projects, Education, Contact
+│   ├── data/
+│   │   └── site.ts          # ← ALL content lives here (single source of truth)
+│   ├── layouts/
+│   │   └── BaseLayout.astro # Meta, fonts, theme init, structured data
+│   ├── lib/                 # siteGenerator (byte-faithful site.ts writer), auth, serverContent
+│   ├── pages/
+│   │   ├── index.astro      # The public portfolio
+│   │   ├── admin.astro      # Private admin (server-rendered, noindex, not linked anywhere)
+│   │   └── api/admin/       # login · logout · session · content · publish · history · revert
+│   ├── scripts/             # Browser scripts (scroll reveal, hidden admin trigger)
+│   └── styles/              # Design tokens (global.css) + admin trigger styles
+├── admin/                   # Local-only admin app (offline alternative to /admin)
+├── scripts/
+│   └── set-password.mjs     # Generates the scrypt hash for the admin password
+└── public/                  # Favicons, social preview image, robots.txt
 ```
 
-## Security model
+## 🚀 Getting Started
 
-- The 5-click trigger is obscurity only — **authentication is real and server-side**
-- Password stored as an scrypt hash in Vercel env vars (never in Git, never client-side)
-- Session = HMAC-signed, HttpOnly + Secure + SameSite=Strict cookie, 2-hour expiry
-- Generic login errors; per-IP failure throttling with cooldown
-- Publish/revert/history APIs all verify the session on every request
-- Secrets never in source, never in the browser, never in Git
+### Prerequisites
+
+- **Node.js ≥ 22.12** (the site build and the local tools need it)
+- npm (comes with Node)
+- Git
+
+### Installation
+
+```bash
+git clone https://github.com/GhouseNahri/portfolio.git
+cd portfolio
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+Starts the dev server at `http://localhost:4321`.
+
+### Build
+
+```bash
+npm run build
+```
+
+Outputs the production build to `dist/`.
+
+### Preview
+
+```bash
+npm run preview
+```
+
+Serves the production build locally for a final check.
+
+## 🌍 Deployment
+
+The site is deployed on **Vercel** and connected to this repository: every push to
+`main` triggers an automatic build and goes live in about a minute. No manual deploy
+steps are needed. The Astro Vercel adapter keeps all public pages static while letting
+`/admin` and its API routes run as serverless functions.
+
+## 🔐 Private Admin (for me)
+
+The public site has no admin link. I open it by clicking the dot of the **"i"** in
+**"Nahri"** 5 times within 3 seconds, which reveals `/admin`. Logging in requires an
+Admin ID + password that are verified **server-side** (scrypt hash in Vercel
+environment variables — never in the repo). From there I can edit every section,
+publish to the live site, and revert to any previous version. A local-only admin app
+(`npm run admin`) provides the same editing offline.
+
+## 📈 Current Learning & Future Improvements
+
+- Deepening fundamentals: Python, C, data structures, and security fundamentals
+- Adding more real projects as they're built (newest first)
+- Wiring the contact form to an email service so messages actually arrive
+- A custom domain once I pick one
