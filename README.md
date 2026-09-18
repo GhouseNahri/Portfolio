@@ -31,10 +31,8 @@ I can't back up.
 - **Scroll-reveal animations** — GPU-composited, honors `prefers-reduced-motion`
 - **Accessible by design** — semantic HTML, skip link, visible focus states, keyboard navigation, 44px touch targets, WCAG-checked contrast
 - **SEO-ready** — semantic headings, meta description, canonical URL, Open Graph + Twitter cards, JSON-LD structured data (Person), robots.txt, social preview image
-- **Zero-JS public pages** — the portfolio is pre-built static HTML; the only browser scripts are scroll-reveal and a tiny hidden trigger (~1 KB)
-- **Private content admin** — a hidden 5-click trigger on the "i" in my name opens an
-  authenticated dashboard (server-side scrypt auth, signed session cookies) where I can
-  edit every section and publish changes straight from the browser — no code required
+- **Zero-JS public pages** — the portfolio is pre-built static HTML; the only browser scripts are scroll-reveal and one tiny utility script (~1 KB)
+- **Private content management** — content is edited and published through an authenticated dashboard, without touching code
 - **One-click undo** — every publish is a git commit, so any past version of the content is one revert away
 
 ## 🛠️ Tech Stack
@@ -117,17 +115,7 @@ Serves the production build locally for a final check.
 
 The site is deployed on **Vercel** and connected to this repository: every push to
 `main` triggers an automatic build and goes live in about a minute. No manual deploy
-steps are needed. The Astro Vercel adapter keeps all public pages static while letting
-`/admin` and its API routes run as serverless functions.
-
-## 🔐 Private Admin (for me)
-
-The public site has no admin link. I open it by clicking the dot of the **"i"** in
-**"Nahri"** 5 times within 3 seconds, which reveals `/admin`. Logging in requires an
-Admin ID + password that are verified **server-side** (scrypt hash in Vercel
-environment variables — never in the repo). From there I can edit every section,
-publish to the live site, and revert to any previous version. A local-only admin app
-(`npm run admin`) provides the same editing offline.
+steps are needed.
 
 ## 📈 Current Learning & Future Improvements
 
