@@ -23,17 +23,19 @@
 //     bad publish is exactly one `git revert` away (see Publish history
 //     on the dashboard).
 //
-// Needs Node >= 22.12 (uses native TypeScript import to read site.ts,
-// matching the engine requirement already declared in package.json).
+// The byte-faithful site.ts generator and validation are SHARED with the
+// online admin (src/lib/siteGenerator.ts) — one writer, one format, no
+// drift between the two tools. Node >= 22.12 strips that file's types
+// natively (same engine requirement as the site itself).
 // ==========================================================================
 
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
-import { pathToFileURL } from "node:url";
 import os from "node:os";
-import { fileURLToPath } from "node:url";
+import { pathToFileURL, fileURLToPath } from "node:url";
+import { buildSiteTs, normalizeState, validate } from "../src/lib/siteGenerator.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DATA_FILE = path.join(ROOT, "src", "data", "site.ts");
@@ -143,179 +145,9 @@ async function discardDraft() {
 }
 
 // --------------------------------------------------------------------------
-// site.ts generation — byte-faithful round-trip.
-// The generator reproduces the hand-written file exactly (same comments,
-// prettier's 80-column wrapping, trailing commas), so saving unchanged data
-// produces an EMPTY diff, and a real edit shows only its own lines.
+// Validation — shared with the online admin (src/lib/siteGenerator.ts).
+// Never silently accept malformed URLs (plan requirement).
 // --------------------------------------------------------------------------
-
-// "key: value," — wraps the value to the next line (indent + 2) when the
-// single-line form would exceed prettier's 80-column print width.
-function kv(key, val, indent) {
-  const pad = " ".repeat(indent);
-  const one = `${pad}${key}: ${JSON.stringify(val ?? "")},`;
-  if (one.length <= 80) return one;
-  return `${pad}${key}:\n${pad}  ${JSON.stringify(val ?? "")},`;
-}
-
-// "key: ["a", "b"]," — inline when it fits, one-per-line when it doesn't.
-function kvArr(key, items, indent) {
-  const pad = " ".repeat(indent);
-  const list = (items || []).map((it) => JSON.stringify(it ?? ""));
-  const one = `${pad}${key}: [${list.join(", ")}],`;
-  if (one.length <= 80 && !list.some((t) => t.includes("\n"))) return one;
-  if (!list.length) return `${pad}${key}: [],`;
-  return `${pad}${key}: [\n${list.map((t) => `${pad}  ${t},`).join("\n")}\n${pad}],`;
-}
-
-function buildSiteTs(state) {
-  const s = state.site;
-  const a = state.about;
-  const sk = state.skills;
-  const p = state.projects;
-  const e = state.education;
-
-  const projectEntries = (p.items || [])
-    .map((pr) => {
-      return `    {
-${kv("title", pr.title, 6)}
-${kv("description", pr.description, 6)}
-${kvArr("tech", pr.tech || [], 6)}
-${kv("status", pr.status, 6)}
-${kv("github", pr.github, 6)}
-${kv("demo", pr.demo, 6)}
-    },`;
-    })
-    .join("\n");
-
-  const educationEntries = (e.entries || [])
-    .map((ed) => {
-      return `    {
-${kv("degree", ed.degree, 6)}
-${kv("institution", ed.institution, 6)}
-${kv("period", ed.period, 6)}
-${kv("note", ed.note, 6)} // optional: relevant coursework — intentionally empty
-    },`;
-    })
-    .join("\n");
-
-  const skillGroups = (sk.groups || [])
-    .map((g) => {
-      return `    {
-${kv("label", g.label, 6)}
-${kvArr("items", g.items || [], 6)}
-    },`;
-    })
-    .join("\n");
-
-  return `// ==========================================================================
-// SITE DATA — the single source of truth for personal content.
-// Sections import from here, so updating content never means touching
-// component markup. Content was personalized in Phase 7 from the approved
-// content specification. We never invent facts: empty sections stay empty
-// until things are real.
-// ==========================================================================
-
-export const site = {
-${kv("name", s.name, 2)}
-${kv("firstName", s.firstName, 2)}
-${kv("role", s.role, 2)}
-${kv("tagline", s.tagline, 2)}
-  // Real (Phase 1): the portfolio exists to win internship opportunities.
-${kv("availability", s.availability, 2)}
-${kv("github", s.github, 2)}
-  // Real profile URL (updated 2026-09-17 at Ghouse's request to the
-  // full public-profile slug). Shown in the footer, contact section and
-  // JSON-LD sameAs automatically.
-${kv("linkedin", s.linkedin, 2)}
-  // Privacy choice (Phase 1, re-confirmed Phase 7): email stays hidden;
-  // visitors use the form or GitHub.
-${kv("email", s.email, 2)}
-  // No resume yet — add a path/URL when it exists and the button wires up.
-${kv("resume", s.resume, 2)}
-  // SEO (editable in the local admin): the homepage's default meta
-  // description — also used for Open Graph / Twitter cards.
-  seo: {
-${kv("description", s.seo?.description, 4)}
-  },
-} as const;
-
-// Phase 7 (approved): origin = curiosity; this portfolio is the first
-// real project; cyber security is named strictly as an interest, never
-// as a skill.
-export const about = {
-${kvArr("paragraphs", a.paragraphs || [], 2)}
-  // Currently learning — shown as chips in the About section. Python
-  // graduated out in Phase 7: it's a listed skill now, not a learning
-  // item. Security fundamentals joins as an approved, honest interest.
-${kvArr("currentlyLearning", a.currentlyLearning || [], 2)}
-} as const;
-
-// Phase 7 (approved): regrouped after building this portfolio — every
-// item below has been genuinely used in this very project. The footnote
-// is a self-assessment rendered under the grid; never percentages.
-export const skills = {
-  groups: [
-${skillGroups}
-  ],
-${kv("footnote", sk.footnote, 2)}
-} as const;
-
-// Phase 7 (approved): the portfolio itself is the first listed project —
-// real, in-progress until Phase 8 deployment, with the AI-assisted
-// workflow stated openly. Add further projects newest-first:
-//
-// {
-//   title: "Personal Portfolio Website",
-//   description: "...",
-//   tech: ["Astro", "TypeScript", "Tailwind CSS"],
-//   status: "in-progress" | "live" | "archived",
-//   github: "https://github.com/GhouseNahri/portfolio",
-//   demo: "", // live URL if one exists
-// },
-export const projects = {
-  items: [
-${projectEntries}
-  ],
-} as const;
-
-// Phase 7 (approved): real details replace the Phase 1 placeholder.
-export const education = {
-  entries: [
-${educationEntries}
-  ],
-} as const;
-`;
-}
-
-// --------------------------------------------------------------------------
-// Validation — never silently accept malformed URLs (plan requirement).
-// --------------------------------------------------------------------------
-
-function validUrl(u) {
-  if (!u) return true; // empty allowed — site renders honestly without
-  try {
-    const parsed = new URL(u);
-    return parsed.protocol === "https:" || parsed.protocol === "http:";
-  } catch {
-    return false;
-  }
-}
-
-function validate(state) {
-  const errors = [];
-  const s = state.site || {};
-  if (!String(s.name || "").trim()) errors.push("Name is required.");
-  if (!validUrl(s.github)) errors.push("GitHub URL is not a valid http(s) URL.");
-  if (!validUrl(s.linkedin)) errors.push("LinkedIn URL is not a valid http(s) URL.");
-  if (!validUrl(s.resume)) errors.push("Resume URL is not a valid http(s) URL.");
-  if (!validUrl(s.email)) errors.push("Email must be empty or a mailto: link.");
-  for (const [i, pr] of (state.projects?.items || []).entries()) {
-    if (!validUrl(pr.github)) errors.push(`Project ${i + 1} (“${pr.title}”): GitHub URL is not valid.`);
-    if (!validUrl(pr.demo)) errors.push(`Project ${i + 1} (“${pr.title}”): demo URL is not valid.`);
-  }
-  return errors;
-}
 
 // --------------------------------------------------------------------------
 // Publish — git commit + push of exactly one file, with a clean summary.
@@ -473,9 +305,10 @@ const server = http.createServer(async (req, res) => {
     // ---- save draft ----
     if (url.pathname === "/api/save" && req.method === "POST") {
       const body = await readJsonBody(req);
-      const errors = validate(body);
+      const state = normalizeState(body);
+      const errors = validate(state);
       if (errors.length) return sendJson(res, 400, { error: errors.join(" "), errors });
-      writeDraft(body, body._note || "");
+      writeDraft(state, body._note || "");
       const status = execSync("git status --porcelain src/data/site.ts", { cwd: ROOT, encoding: "utf8" }).trim();
       return sendJson(res, 200, { ok: true, changed: !!status });
     }

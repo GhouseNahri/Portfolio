@@ -6,6 +6,15 @@ import Section from "../Section.astro";
 import Button from "../Button.astro";
 import Badge from "../Badge.astro";
 import { site } from "../../data/site";
+
+// Hidden admin door: the trigger lives on the DOT zone of the final "i"
+// in the name ("Nahri"). Only the dot area is interactive — the letter,
+// the word and the design are visually untouched. If the name is ever
+// changed in the admin and no longer ends with "i", the trigger simply
+// doesn't render (no broken UI, no mis-positioned target).
+const name = site.name;
+const hasDotTrigger = name.endsWith("i");
+const nameBase = hasDotTrigger ? name.slice(0, -1) : name;
 ---
 
 <Section space="md" class="pt-16 sm:pt-28">
@@ -19,7 +28,22 @@ import { site } from "../../data/site";
 
       <!-- The page's single h1 -->
       <h1>
-        {site.name}
+        {hasDotTrigger ? (
+          <>
+            {nameBase}
+            {/* word-joiner: the i-span is an atomic inline, so without this
+                a narrow line could break between "Nahr" and "i" */}
+            &#8288;
+            <span class="idot-wrap">
+              {name.slice(-1)}
+              <!-- aria-hidden: the letter itself stays in the a11y tree;
+                   only the invisible click target is hidden. -->
+              <span class="idot-target" data-admin-dot aria-hidden="true"></span>
+            </span>
+          </>
+        ) : (
+          name
+        )}
         <!-- Role gets its own smaller scale: display size makes this
              line wrap into a huge 2-line block on phones. -->
         <span class="mt-2 block text-xl text-muted sm:text-2xl">{site.role}</span>

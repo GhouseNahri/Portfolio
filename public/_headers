@@ -1,0 +1,11 @@
+# Security headers (applied by hosts that support the _headers format;
+# Vercel ignores this file — headers there come from vercel.json).
+# Safe to keep: documents intent, works if the site ever moves hosts.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+
+/api/admin/*
+  Cache-Control: no-store, max-age=0

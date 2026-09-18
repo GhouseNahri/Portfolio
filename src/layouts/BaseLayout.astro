@@ -6,6 +6,7 @@ import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/jetbrains-mono";
 import "../styles/global.css";
+import "../styles/adminTrigger.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { site, education } from "../data/site";
@@ -131,6 +132,11 @@ const jsonLd = {
     <script>
       import "../scripts/reveal";
     </script>
+    <!-- Hidden admin door: 5 taps on the "i" dot in the hero → /admin.
+         A doorbell, not a lock — /admin enforces real authentication. -->
+    <script>
+      import "../scripts/adminTrigger";
+      </script>
   </body>
 </html>
 

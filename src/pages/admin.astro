@@ -1,0 +1,588 @@
+---
+// ==========================================================================
+// /admin — PRIVATE, SERVER-RENDERED ADMIN PAGE.
+//
+// Not linked anywhere in the public site. The door is the hidden 5-click
+// trigger on the "i" dot of "Nahri" (hero) — and even someone who finds
+// it must still pass full server-side authentication.
+//
+// Rendering: `prerender = false` keeps this page OUT of the static build.
+// Public pages stay pre-built static files; this one renders on demand
+// behind Vercel's serverless functions. noindex + nofollow keep search
+// engines away (politeness — the session check is the real lock).
+//
+// The UI uses the site's own design tokens (global.css) so the control
+// panel feels like part of the same product, without touching the
+// public portfolio's markup in any way.
+// ==========================================================================
+export const prerender = false;
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Portfolio admin</title>
+    <script is:inline>
+      // Same theme behaviour as the public site, so the panel matches.
+      (() => {
+        try {
+          const stored = localStorage.getItem("theme");
+          const prefersLight = matchMedia("(prefers-color-scheme: light)").matches;
+          if ((stored ?? (prefersLight ? "light" : "dark")) === "light")
+            document.documentElement.classList.add("light");
+        } catch {
+          /* default dark */
+        }
+      })();
+    </script>
+  </head>
+  <body class="admin-body">
+    <!-- ============================== LOGIN ============================== -->
+    <section id="view-login" class="login-wrap" hidden>
+      <form id="login-form" class="login-card" novalidate>
+        <h1 class="login-title">Portfolio admin</h1>
+        <p class="login-hint">Private area — sign in to manage your content.</p>
+
+        <label class="field">
+          <span>Admin ID</span>
+          <input id="login-user" name="username" type="text" autocomplete="username" required />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input id="login-pass" name="password" type="password" autocomplete="current-password" required />
+        </label>
+
+        <p id="login-error" class="form-error" role="alert" hidden></p>
+        <button id="login-submit" type="submit" class="btn primary wide">Sign in</button>
+        <p class="login-foot">Paused after repeated failed attempts — by design.</p>
+      </form>
+    </section>
+
+    <!-- ============================ DASHBOARD ============================ -->
+    <section id="view-dashboard" hidden>
+      <header class="topbar">
+        <span class="brand">Portfolio admin</span>
+        <span id="who" class="who"></span>
+        <button id="logout-btn" type="button" class="btn ghost">Log out</button>
+      </header>
+
+      <nav class="tabs" aria-label="Admin sections">
+        <button type="button" class="tab" data-tab="profile" aria-selected="true">Profile</button>
+        <button type="button" class="tab" data-tab="about" aria-selected="false">About</button>
+        <button type="button" class="tab" data-tab="skills" aria-selected="false">Skills</button>
+        <button type="button" class="tab" data-tab="projects" aria-selected="false">Projects</button>
+        <button type="button" class="tab" data-tab="education" aria-selected="false">Education</button>
+        <button type="button" class="tab" data-tab="publish" aria-selected="false">Publish</button>
+      </nav>
+
+      <main class="panel-area">
+        <!-- PROFILE -->
+        <section id="tab-profile" class="panel" hidden>
+          <h2>Profile</h2>
+          <p class="panel-hint">Your identity, shown in the hero, header, contact section and search results.</p>
+          <div class="grid2">
+            <label class="field"><span>Name <em>hero + browser tab</em></span><input data-k="site.name" /></label>
+            <label class="field"><span>Role <em>under your name</em></span><input data-k="site.role" /></label>
+            <label class="field"><span>Availability badge</span><input data-k="site.availability" /></label>
+            <label class="field"><span>First name</span><input data-k="site.firstName" /></label>
+          </div>
+          <label class="field"><span>Tagline <em>the intro sentence</em></span><textarea data-k="site.tagline" rows="2"></textarea></label>
+          <div class="grid2">
+            <label class="field"><span>GitHub URL</span><input data-k="site.github" type="url" placeholder="https://github.com/…" /></label>
+            <label class="field"><span>LinkedIn URL</span><input data-k="site.linkedin" type="url" placeholder="https://www.linkedin.com/in/…" /></label>
+            <label class="field"><span>Email <em>empty = hidden (mailto:… to show)</em></span><input data-k="site.email" placeholder="mailto:you@example.com" /></label>
+            <label class="field"><span>Resume URL <em>empty = no button</em></span><input data-k="site.resume" type="url" /></label>
+          </div>
+          <label class="field">
+            <span>SEO description <em>Google result + social cards</em></span>
+            <textarea data-k="site.seo.description" rows="3" maxlength="400"></textarea>
+          </label>
+          <p id="seo-preview-label" class="seo-label">Google preview</p>
+          <div class="seo-preview" aria-hidden="true">
+            <p class="seo-title" id="seo-p-title"></p>
+            <p class="seo-url">portfolio-alpha-three-20.vercel.app</p>
+            <p class="seo-desc" id="seo-p-desc"></p>
+          </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="tab-about" class="panel" hidden>
+          <h2>About</h2>
+          <p class="panel-hint">Paragraphs are separated by a blank line inside the box.</p>
+          <label class="field"><span>About paragraphs</span><textarea id="about-paragraphs" rows="9"></textarea></label>
+          <label class="field">
+            <span>Currently learning <em>comma-separated chips</em></span>
+            <input id="about-chips" placeholder="Data structures, Security fundamentals" />
+          </label>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="tab-skills" class="panel" hidden>
+          <h2>Skills</h2>
+          <p class="panel-hint">Groups appear as columns; items as chips, comma-separated.</p>
+          <div id="skills-groups" class="stack"></div>
+          <button type="button" class="btn" id="add-skill-group">+ Add group</button>
+          <label class="field"><span>Footnote <em>honest self-assessment line</em></span><textarea id="skills-footnote" rows="2"></textarea></label>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="tab-projects" class="panel" hidden>
+          <h2>Projects</h2>
+          <p class="panel-hint">First card is the featured one. Every URL is validated before publish.</p>
+          <div id="projects-list" class="stack"></div>
+          <button type="button" class="btn" id="add-project">+ Add project</button>
+        </section>
+
+        <!-- EDUCATION -->
+        <section id="tab-education" class="panel" hidden>
+          <h2>Education</h2>
+          <div id="education-list" class="stack"></div>
+          <button type="button" class="btn" id="add-education">+ Add education</button>
+        </section>
+
+        <!-- PUBLISH -->
+        <section id="tab-publish" class="panel" hidden>
+          <h2>Publish</h2>
+          <p class="panel-hint">
+            Publishing commits your content to GitHub — the live site updates in about 30–60 seconds.
+            Every past version stays in history: <strong>Revert</strong> restores it with one click.
+          </p>
+          <label class="field">
+            <span>Commit message <em>optional — what changed?</em></span>
+            <input id="publish-message" placeholder="Update portfolio content via admin" />
+          </label>
+          <div class="history-head">
+            <h3>Content history</h3>
+            <button type="button" class="btn ghost small" id="refresh-history">Refresh</button>
+          </div>
+          <ul id="history-list" class="history"></ul>
+          <p id="history-note" class="panel-hint" hidden></p>
+        </section>
+      </main>
+
+      <footer class="statusbar">
+        <span id="dirty-indicator" class="dirty" data-state="clean"></span>
+        <span class="spacer"></span>
+        <button id="reload-btn" type="button" class="btn ghost">Reload</button>
+        <button id="publish-btn" type="button" class="btn primary">Publish changes</button>
+      </footer>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <script is:inline src="/admin/admin.js"></script>
+  </body>
+</html>
+
+<style>
+  /* Admin-only chrome. Tokens come from global.css (same identity as
+     the public site); nothing here leaks into public pages. */
+  .admin-body {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-background);
+  }
+
+  /* ---- login ---- */
+  .login-wrap {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+  }
+  .login-card {
+    width: min(24rem, 100%);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.75rem;
+    box-shadow: var(--shadow-lift);
+  }
+  .login-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  .login-hint,
+  .login-foot {
+    color: var(--color-muted);
+    font-size: 0.875rem;
+  }
+  .login-foot {
+    margin-top: 1.25rem;
+    color: var(--color-faint);
+    text-align: center;
+  }
+  .form-error {
+    color: var(--color-error);
+    font-size: 0.875rem;
+    margin: 0.25rem 0 0.75rem;
+  }
+
+  /* ---- fields ---- */
+  .field {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .field > span {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    margin-bottom: 0.3rem;
+  }
+  .field > span em {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--color-faint);
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    background-color: var(--color-background);
+    color: var(--color-ink);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.7rem;
+    font: inherit;
+    font-size: 0.9375rem;
+  }
+  .field input:focus-visible,
+  .field textarea:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+    border-color: var(--color-accent);
+  }
+  .field textarea {
+    resize: vertical;
+    line-height: 1.55;
+  }
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 0 1.25rem;
+  }
+
+  /* ---- buttons ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out-soft),
+      border-color var(--duration-fast) var(--ease-out-soft);
+  }
+  .btn:hover {
+    border-color: var(--color-accent);
+  }
+  .btn.primary {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  .btn.primary:hover {
+    background-color: var(--color-accent-hover);
+  }
+  .btn.ghost {
+    background: transparent;
+  }
+  .btn.small {
+    min-height: 36px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.8125rem;
+  }
+  .btn.wide {
+    width: 100%;
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  /* ---- topbar / tabs ---- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+    background-color: var(--color-surface);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+  .who {
+    color: var(--color-faint);
+    font-size: 0.875rem;
+    margin-inline-start: auto;
+  }
+  .tabs {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.5rem 1.25rem 0;
+    border-bottom: 1px solid var(--color-line);
+    background-color: var(--color-surface);
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 0.6rem 0.9rem;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--color-muted);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab:hover {
+    color: var(--color-ink);
+  }
+  .tab[aria-selected="true"] {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+
+  /* ---- panels ---- */
+  .panel-area {
+    flex: 1;
+    width: 100%;
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 5rem;
+  }
+  .panel h2 {
+    margin-bottom: 0.25rem;
+  }
+  .panel-hint {
+    color: var(--color-faint);
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+    max-width: 60ch;
+  }
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .card-head h3 {
+    font-size: 1rem;
+    margin-inline-end: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .badge {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-full);
+    padding: 0.1rem 0.5rem;
+  }
+  .icon-btn {
+    min-width: 36px;
+    min-height: 36px;
+    border: 1px solid var(--color-line);
+    background: none;
+    color: var(--color-muted);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.9375rem;
+  }
+  .icon-btn:hover {
+    color: var(--color-ink);
+    border-color: var(--color-accent);
+  }
+  .icon-btn.danger:hover {
+    color: var(--color-error);
+    border-color: var(--color-error);
+  }
+
+  /* ---- SEO preview ---- */
+  .seo-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-faint);
+    margin-top: 0.5rem;
+  }
+  .seo-preview {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    background-color: #fff;
+    max-width: 40rem;
+  }
+  .seo-preview .seo-title {
+    color: #1a0dab;
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+  }
+  .seo-preview .seo-url {
+    color: #006621;
+    font-size: 0.8125rem;
+  }
+  .seo-preview .seo-desc {
+    color: #4d5156;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* ---- history ---- */
+  .history-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  .history-head h3 {
+    font-size: 1rem;
+  }
+  .history {
+    list-style: none;
+    padding: 0;
+    margin: 0.75rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .history li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.9rem;
+    font-size: 0.875rem;
+  }
+  .history code {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    font-size: 0.8125rem;
+  }
+  .history .h-msg {
+    margin-inline-end: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-muted);
+  }
+  .history time {
+    color: var(--color-faint);
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  /* ---- statusbar / toast ---- */
+  .statusbar {
+    position: fixed;
+    bottom: 0;
+    inset-inline: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--color-line);
+    background-color: var(--color-surface);
+    z-index: 10;
+  }
+  .spacer {
+    flex: 1;
+  }
+  .dirty::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-inline-end: 0.4rem;
+    background-color: var(--color-faint);
+  }
+  .dirty[data-state="dirty"]::before {
+    background-color: var(--color-warning);
+  }
+  .dirty[data-state="dirty"]::after {
+    content: "unsaved changes";
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+  .dirty[data-state="clean"]::after {
+    content: "all changes published";
+    font-size: 0.8125rem;
+    color: var(--color-faint);
+  }
+  .dirty[data-state="saving"]::after {
+    content: "publishing…";
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+  }
+  .toast {
+    position: fixed;
+    bottom: 4.5rem;
+    left: 50%;
+    translate: -50% 0;
+    background-color: var(--color-elevated);
+    color: var(--color-ink);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: 0.7rem 1.1rem;
+    font-size: 0.9375rem;
+    box-shadow: var(--shadow-lift);
+    z-index: 50;
+    max-width: min(30rem, calc(100vw - 2rem));
+  }
+  .toast.ok {
+    border-color: var(--color-success);
+  }
+  .toast.err {
+    border-color: var(--color-error);
+  }
+
+  @media (max-width: 480px) {
+    .topbar {
+      padding: 0.6rem 0.9rem;
+    }
+    .who {
+      display: none;
+    }
+    .panel-area {
+      padding: 1.1rem 0.9rem 5rem;
+    }
+  }
+</style>

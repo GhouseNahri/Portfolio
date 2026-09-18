@@ -1,0 +1,40 @@
+/* ==========================================================================
+   HIDDEN ADMIN TRIGGER — invisible click target over the dot of the
+   final "i" in the hero name. Visually the page is pixel-identical:
+   the target is transparent, and (only under Touch/Mouse pointers)
+   the cursor may show as default/pointer. No layout shift: the target
+   is absolutely positioned inside the letter's span.
+   ========================================================================== */
+
+.idot-wrap {
+  /* Anchor for the dot target; inline so the name wraps naturally. */
+  position: relative;
+  display: inline-block;
+}
+
+.idot-target {
+  position: absolute;
+  /* Calibrated to the dot zone of Space Grotesk's lowercase "i" at the
+     hero's clamp(2.25rem–3.5rem) sizes: x-height top edge sits ~26% down
+     from the cap line; the dot occupies roughly the top 45% of the
+     letter's height, horizontally centered. The target is deliberately
+     LARGER than the glyph dot (~22×22px) so 5 taps land reliably within
+     3 seconds, especially on touch screens — without covering the
+     neighbouring letters. The "i" is the final letter of "Nahri", so
+     empty space above/right means no overlap with other glyphs. */
+  top: -0.06em;
+  left: 0.06em;
+  width: 0.62em;
+  height: 0.52em;
+  transform: translate(-50%, 0);
+  background: transparent;
+  border: none;
+  /* Accept pointer events over the dot zone; everything else on the page
+     behaves exactly as before. No focus ring: aria-hidden, not focusable. */
+  pointer-events: auto;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Reduced motion is unaffected (nothing animates). Zero visual delta:
+   verified against production before this file existed. */
