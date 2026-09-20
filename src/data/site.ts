@@ -92,6 +92,20 @@ export const projects = {
       github: "https://github.com/GhouseNahri/portfolio",
       demo: "",
     },
+    // Team hackathon project (Code & Debug Challenge, Sept 2026): shared
+    // repo (Farzansayeed/wiki_hackathon, 4 contributors) — Ghouse's
+    // contribution was the backend JavaScript. Position second per
+    // Ghouse's explicit choice; features listed are verified in the
+    // repo's code, not copied from its README.
+    {
+      title: "WikiExplore",
+      description:
+        "Team hackathon project: a live Wikipedia exploration app — today's featured and most-read articles, a full reader with table of contents, live search, random discovery, and bookmarks with reading streaks. Zero frameworks: semantic HTML, vanilla CSS and ES6 JavaScript on Vercel.",
+      tech: ["JavaScript", "HTML", "CSS", "Wikipedia APIs", "Vercel"],
+      status: "live",
+      github: "https://github.com/Farzansayeed/wiki_hackathon",
+      demo: "https://wiki-explore.vercel.app/",
+    },
   ],
 } as const;
 
