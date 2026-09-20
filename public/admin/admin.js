@@ -246,6 +246,14 @@ function renderSkills() {
     );
     wrap.append(card);
   });
+  // The footnote textarea lives in the static markup; load it here so it
+  // survives re-renders and saves back into the published state.
+  const footnote = $("#skills-footnote");
+  footnote.value = state.skills.footnote ?? "";
+  footnote.oninput = (e) => {
+    state.skills.footnote = e.target.value;
+    markDirty();
+  };
 }
 const swapSkill = (a, b) => () => {
   [state.skills.groups[a], state.skills.groups[b]] = [state.skills.groups[b], state.skills.groups[a]];
@@ -359,6 +367,45 @@ const swapEdu = (a, b) => () => {
   markDirty();
   renderEducation();
 };
+
+// -------------------------------------------- +Add buttons (port of the
+// reference app's handlers — admin/admin.mjs). Each pushes a blank
+// record, re-renders and scrolls the new card into view. Nothing reaches
+// GitHub until Publish changes is pressed; Delete (🗑) and the ↑/↓
+// reorder buttons above already worked once a record existed.
+
+function scrollLastCardIntoView(wrapId) {
+  const cards = $(`#${wrapId}`).querySelectorAll(".card");
+  cards[cards.length - 1]?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+$("#add-project").addEventListener("click", () => {
+  state.projects.items.push({
+    title: "New project",
+    description: "",
+    tech: [],
+    status: "in-progress",
+    github: "",
+    demo: "",
+  });
+  markDirty();
+  renderProjects();
+  scrollLastCardIntoView("projects-list");
+});
+
+$("#add-skill-group").addEventListener("click", () => {
+  state.skills.groups.push({ label: "New group", items: [] });
+  markDirty();
+  renderSkills();
+  scrollLastCardIntoView("skills-groups");
+});
+
+$("#add-education").addEventListener("click", () => {
+  state.education.entries.push({ degree: "", institution: "", period: "", note: "" });
+  markDirty();
+  renderEducation();
+  scrollLastCardIntoView("education-list");
+});
 
 // ------------------------------------------------------------ data load
 
