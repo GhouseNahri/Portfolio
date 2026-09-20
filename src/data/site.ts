@@ -37,9 +37,9 @@ export const site = {
 // as a skill.
 export const about = {
   paragraphs: [
-    "I'm Ghouse, an IT student at Matrusri Engineering College at the start of my developer journey. I got here through plain curiosity about how things work — and that curiosity shapes how I learn: fundamentals first. Python for everyday problem solving, C for understanding what's really happening inside data structures.",
-    "I care about learning things properly rather than quickly: writing code that works, understanding why it works, and improving it. This portfolio is my first real project — built with an AI-assisted workflow that I drive: every design decision, every test, every commit is mine. My curiosity is now also pulling toward cyber security — learning how systems fail is the same question, asked from the other side.",
-    "I'm looking for an internship where I can contribute, ask a lot of questions, and learn how real software teams work. Meanwhile, I keep sharpening the fundamentals and building things here, one honest project at a time.",
+    "I'm Ghouse, an IT student at Matrusri Engineering College at the start of my developer journey. I got here through plain curiosity about how things work — and that curiosity shapes how I learn: fundam",
+    "I care about learning things properly rather than quickly: writing code that works, understanding why it works, and improving it. This portfolio is my first real project — built with an AI-assisted wo",
+    "I'm looking for an internship where I can contribute, ask a lot of questions, and learn how real software teams work. Meanwhile, I keep sharpening the fundamentals and building things here, one honest",
   ],
   // Currently learning — shown as chips in the About section. Python
   // graduated out in Phase 7: it's a listed skill now, not a learning
@@ -92,11 +92,6 @@ export const projects = {
       github: "https://github.com/GhouseNahri/portfolio",
       demo: "",
     },
-    // Team hackathon project (Code & Debug Challenge, Sept 2026): shared
-    // repo (Farzansayeed/wiki_hackathon, 4 contributors) — Ghouse's
-    // contribution was the backend JavaScript. Position second per
-    // Ghouse's explicit choice; features listed are verified in the
-    // repo's code, not copied from its README.
     {
       title: "WikiExplore",
       description:
@@ -105,6 +100,14 @@ export const projects = {
       status: "live",
       github: "https://github.com/Farzansayeed/wiki_hackathon",
       demo: "https://wiki-explore.vercel.app/",
+    },
+    {
+      title: "Cyber_Path",
+      description: "",
+      tech: [],
+      status: "in-progress",
+      github: "",
+      demo: "",
     },
   ],
 } as const;
