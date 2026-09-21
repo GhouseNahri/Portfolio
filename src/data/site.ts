@@ -103,10 +103,10 @@ export const projects = {
     },
     {
       title: "Cyber_Path",
-      description: "",
+      description: "App For Learning Cyber Security",
       tech: [],
       status: "in-progress",
-      github: "",
+      github: "https://github.com/GhouseNahri/Cyber_Path",
       demo: "",
     },
   ],
