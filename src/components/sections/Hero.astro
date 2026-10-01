@@ -12,6 +12,13 @@ import { site } from "../../data/site";
 // the word and the design are visually untouched. If the name is ever
 // changed in the admin and no longer ends with "i", the trigger simply
 // doesn't render (no broken UI, no mis-positioned target).
+//
+// FuzzyText: the name (not the whole h1) carries [data-fuzzy-name];
+// src/scripts/fuzzyText.ts renders it on a canvas with a subtle fuzz
+// effect. The DOM text below remains the source of truth — screen
+// readers and crawlers still see real text; the canvas is aria-hidden.
+// With JS disabled or prefers-reduced-motion, this exact DOM name
+// (green dot included) is what shows — no canvas at all.
 const name = site.name;
 const hasDotTrigger = name.endsWith("i");
 const nameBase = hasDotTrigger ? name.slice(0, -1) : name;
@@ -30,7 +37,7 @@ const nameBase = hasDotTrigger ? name.slice(0, -1) : name;
       <h1>
         {hasDotTrigger ? (
           <>
-            {nameBase}
+            <span class="fuzzy-name" data-fuzzy-name>{nameBase}
             {/* word-joiner: the i-span is an atomic inline, so without this
                 a narrow line could break between "Nahr" and "i" */}
             &#8288;
@@ -40,9 +47,10 @@ const nameBase = hasDotTrigger ? name.slice(0, -1) : name;
                    only the invisible click target is hidden. -->
               <span class="idot-target" data-admin-dot aria-hidden="true"></span>
             </span>
+            </span>
           </>
         ) : (
-          name
+          <span class="fuzzy-name" data-fuzzy-name>{name}</span>
         )}
         <!-- Role gets its own smaller scale: display size makes this
              line wrap into a huge 2-line block on phones. -->

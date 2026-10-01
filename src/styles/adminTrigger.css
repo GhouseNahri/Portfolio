@@ -57,6 +57,64 @@
   background-clip: text;
 }
 
+/* ==========================================================================
+   FUZZYTEXT CANVAS MODE — active only after the canvas mounts
+   (html.fuzzy-on, set by fuzzyText.ts when it takes over the name).
+   Without JS / reduced motion, the rules above keep the original DOM
+   name + green dot — pixel-identical to pre-FuzzyText. In canvas mode
+   the DOM text hides (the canvas IS the visible name; the text stays
+   for screen readers/SEO), the canvas sits where the name was, and the
+   admin-dot target re-homes onto the canvas dot (px geometry set by
+   the script from measured glyph metrics).
+   ========================================================================== */
+
+.fuzzy-name {
+  display: inline-block;
+}
+
+html.fuzzy-on .fuzzy-name {
+  /* Out of flow + invisible: real text stays for screen readers, SEO
+     and text selection, but paints nothing. No left/top: the span
+     keeps its static position (the h1's first line, same left edge
+     and baseline the canvas now occupies). */
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+html.fuzzy-on .fuzzy-canvas-host {
+  /* Baseline-aligned inline-block: the canvas is exactly the ink box
+     (ascent+descent), so its bottom sits on the text baseline and the
+     h1's line box keeps its original height — zero layout shift. */
+  display: inline-block;
+  vertical-align: baseline;
+  line-height: 0;
+  max-width: 100%;
+
+  /* Positioning context for the re-homed admin-dot target (its px
+     geometry is canvas-relative). Without this the absolute target
+     resolves against the page — the original .idot-wrap anchor had
+     the same rule in DOM mode. */
+  position: relative;
+}
+
+html.fuzzy-on .fuzzy-canvas-host .fuzzy-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+html.fuzzy-on .fuzzy-canvas-host .idot-target {
+  /* Re-homed from .idot-wrap by fuzzyText.ts; px geometry is set
+     inline from measured canvas metrics. left = glyph CENTER (the
+     base rule's translate(-50%, 0) keeps it centred); pointer-events
+     and cursor stay from the base rule. */
+  position: absolute;
+  background: transparent;
+  border: none;
+}
+
 /* Reduced motion is unaffected (nothing animates). Nothing else on the
    page is affected: the rules above are scoped to .idot-wrap — the
    one-letter span of the final "i" in the hero name. */
