@@ -168,7 +168,7 @@ ${kv("footnote", sk.footnote, 2)}
 //   description: "...",
 //   tech: ["Astro", "TypeScript", "Tailwind CSS"],
 //   status: "in-progress" | "live" | "archived",
-//   github: "https://github.com/GhouseNahri/portfolio",
+//   github: "https://github.com/GhouseNahri/Portfolio",
 //   demo: "", // live URL if one exists
 // },
 export const projects = {

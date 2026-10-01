@@ -77,5 +77,5 @@ console.log(encoded);
 console.log("");
 console.log("Also set: ADMIN_USERNAME (your login name),");
 console.log("          SESSION_SECRET (see README for a one-liner),");
-console.log("          GITHUB_TOKEN  (fine-grained PAT for GhouseNahri/portfolio).");
+console.log("          GITHUB_TOKEN  (fine-grained PAT for GhouseNahri/Portfolio).");
 console.log("Then redeploy (Deployments → ⋯ → Redeploy) so they take effect.");

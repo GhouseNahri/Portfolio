@@ -82,7 +82,7 @@ portfolio/
 ### Installation
 
 ```bash
-git clone https://github.com/GhouseNahri/portfolio.git
+git clone https://github.com/GhouseNahri/Portfolio.git
 cd portfolio
 npm install
 ```

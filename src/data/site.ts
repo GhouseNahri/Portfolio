@@ -78,7 +78,7 @@ export const skills = {
 //   description: "...",
 //   tech: ["Astro", "TypeScript", "Tailwind CSS"],
 //   status: "in-progress" | "live" | "archived",
-//   github: "https://github.com/GhouseNahri/portfolio",
+//   github: "https://github.com/GhouseNahri/Portfolio",
 //   demo: "", // live URL if one exists
 // },
 export const projects = {
@@ -89,7 +89,7 @@ export const projects = {
         "The site you're looking at — built in phases like real software: design system first, sections one at a time, each tested and committed before moving on. An AI-assisted workflow that I drive: every decision and commit is mine.",
       tech: ["Astro", "TypeScript", "Tailwind CSS"],
       status: "live",
-      github: "https://github.com/GhouseNahri/portfolio",
+      github: "https://github.com/GhouseNahri/Portfolio",
       demo: "",
     },
     {

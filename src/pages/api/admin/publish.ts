@@ -44,7 +44,7 @@ async function ghFetch(url: string, token: string, init: RequestInit = {}): Prom
 async function friendlyGhError(res: Response): Promise<string> {
   if (res.status === 401) return "GitHub rejected the token (401). Create a fresh fine-grained PAT with Contents Read/Write on this repo and update GITHUB_TOKEN.";
   if (res.status === 403)
-    return "GitHub denied the action (403). The token needs Contents: Read and write permission on GhouseNahri/portfolio — check the PAT's repository access too.";
+    return "GitHub denied the action (403). The token needs Contents: Read and write permission on GhouseNahri/Portfolio — check the PAT's repository access too.";
   if (res.status === 409)
     return "The file changed on GitHub while you were editing (409). Reload the dashboard and re-apply your edit, then publish again.";
   if (res.status === 404) return "Repository or file not found (404). Check the token's repository access.";
